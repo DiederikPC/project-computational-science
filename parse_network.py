@@ -35,12 +35,13 @@ node_states = {}
 for n in range(len(nodes)):
     if np.random.uniform() < i_init:
         # 1 = Infected
-        node_states[n] = 1
+        node_states[str(n)] = 1
     else:
         # 0 = Susceptible
-        node_states[n] = 0
+        node_states[str(n)] = 0
 
-# print(node_states)
+print(node_states)
+print(nodes)
 nx.set_node_attributes(G, node_states, "state")
 
 # initialize infected and susceptible counts
@@ -49,14 +50,13 @@ sus = [len(node_states) - inf[0]]
 
 # initialize average degree of newly infected nodes
 inf_degree_avg = []
-print(f"node 0: {node_states[0]}")
 # update nodes every time step
 for _ in range(time_steps):
     inf_degree = []
     node_states = {}
     for n in G.nodes:
-        print(n)
-        if node_states[0] == 0:
+        print(f"n: {n}, Attributes: {G.nodes[n]}")
+        if G.nodes[n]["state"] == '0':
             neighbors = nx.all_neighbors(G, n)
             neighbor_states = [G.nodes[neighbor]['state'] for neighbor in neighbors]
             n_inf_neighbors = neighbor_states.count(1)
