@@ -3,13 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-N, i, i_init, time_steps = 10**5, 0.01, 0.1, 200
-
-s = nx.utils.powerlaw_sequence(100000, 2.5)
-s = s / np.mean(s) * 5
-G = nx.expected_degree_graph(s, selfloops=False)
-
-#########
+i, i_init, time_steps = 0.01, 0.1, 10
 
 def inf_chance(r, i):
     """
@@ -18,6 +12,18 @@ def inf_chance(r, i):
     """
     return 1 - (1-i)**r
 
+def draw_graph(G):
+
+    node_colors = []
+
+    for state in nx.get_node_attributes(G, 'state').values():
+        if state == 1:
+            node_colors.append('red')
+        else:
+            node_colors.append('blue')
+
+    nx.draw(G)
+    plt.show()
 
 G = nx.read_edgelist('facebook_combined.txt', delimiter=' ')
 
@@ -30,6 +36,8 @@ edges = G.edges()
 # # Show the plot
 # plt.show()
 
+# draw_graph(G)
+
 # initialize node states
 node_states = {}
 for n in range(len(nodes)):
@@ -40,8 +48,6 @@ for n in range(len(nodes)):
         # 0 = Susceptible
         node_states[str(n)] = 0
 
-print(node_states)
-print(nodes)
 nx.set_node_attributes(G, node_states, "state")
 
 # initialize infected and susceptible counts
@@ -50,13 +56,13 @@ sus = [len(node_states) - inf[0]]
 
 # initialize average degree of newly infected nodes
 inf_degree_avg = []
+
 # update nodes every time step
 for _ in range(time_steps):
     inf_degree = []
     node_states = {}
     for n in G.nodes:
-        print(f"n: {n}, Attributes: {G.nodes[n]}")
-        if G.nodes[n]["state"] == '0':
+        if G.nodes[n]["state"] == 0:
             neighbors = nx.all_neighbors(G, n)
             neighbor_states = [G.nodes[neighbor]['state'] for neighbor in neighbors]
             n_inf_neighbors = neighbor_states.count(1)
@@ -82,3 +88,6 @@ for _ in range(time_steps):
 
     # track average degree of newly infected nodes
     inf_degree_avg.append(np.mean(inf_degree))
+
+print(inf)
+print(sus)
