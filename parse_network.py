@@ -1,5 +1,4 @@
 import networkx as nx
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -12,59 +11,45 @@ def inf_chance(r, i):
     """
     return 1 - (1-i)**r
 
-def draw_graph(G):
+
+def draw_graph(G, title):
 
     node_colors = []
 
-    for state in nx.get_node_attributes(G, 'state').values():
+    for state in nx.get_node_attributes(G, "state").values():
         if state == 1:
             node_colors.append('red')
         else:
             node_colors.append('blue')
 
-    nx.draw(G)
+    nx.draw(G, with_labels=False, node_color=node_colors, node_size=20)
+    plt.savefig(title + ".png")
     plt.show()
 
-G = nx.read_edgelist('facebook_combined.txt', delimiter=' ')
 
-nodes = G.nodes()
-edges = G.edges()
+def initialize_graph():
+    G = nx.read_edgelist('facebook_combined.txt', delimiter=' ')
 
-# # Draw the graph
-# nx.draw(G)
+    nodes = G.nodes()
 
-# # Show the plot
-# plt.show()
+    # initialize node states
+    infected = np.zeros(len(nodes))
+    infected[np.random.uniform(size = len(nodes)) < i_init] = 1
+    node_states = dict(zip(nodes, infected))
 
-# draw_graph(G)
+    nx.set_node_attributes(G, node_states, "state")
 
-# initialize node states
-node_states = {}
-for n in range(len(nodes)):
-    if np.random.uniform() < i_init:
-        # 1 = Infected
-        node_states[str(n)] = 1
-    else:
-        # 0 = Susceptible
-        node_states[str(n)] = 0
+    return G
 
-nx.set_node_attributes(G, node_states, "state")
 
-# initialize infected and susceptible counts
-inf = [np.sum(list(node_states.values()))]
-sus = [len(node_states) - inf[0]]
-
-# initialize average degree of newly infected nodes
-inf_degree_avg = []
-
-# update nodes every time step
-for _ in range(time_steps):
+def make_timestep():
     inf_degree = []
     node_states = {}
     for n in G.nodes:
         if G.nodes[n]["state"] == 0:
             neighbors = nx.all_neighbors(G, n)
-            neighbor_states = [G.nodes[neighbor]['state'] for neighbor in neighbors]
+            neighbor_states = [G.nodes[neighbor]['state'] for
+                               neighbor in neighbors]
             n_inf_neighbors = neighbor_states.count(1)
             total_neighbors = len(neighbor_states)
 
@@ -73,12 +58,6 @@ for _ in range(time_steps):
                 node_states[n] = 1
                 inf_degree.append(total_neighbors)
 
-            # not infected
-            else:
-                node_states[n] = 0
-
-        else:
-            node_states[n] = 1
     nx.set_node_attributes(G, node_states, "state")
 
     # track infected and susceptible counts
@@ -89,5 +68,21 @@ for _ in range(time_steps):
     # track average degree of newly infected nodes
     inf_degree_avg.append(np.mean(inf_degree))
 
-print(inf)
-print(sus)
+# initialize infected and susceptible counts
+# inf = [np.sum(list(node_states.values()))]
+# sus = [len(node_states) - inf[0]]
+
+# initialize average degree of newly infected nodes
+inf_degree_avg = []
+
+G = initialize_graph()
+print(nx.get_node_attributes(G, "state"))
+make_timestep()
+print()
+# # update nodes every time step
+# for _ in range(time_steps):
+#     make_timestep(G)
+
+
+# print(inf)
+# print(sus)
