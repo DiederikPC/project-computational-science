@@ -51,8 +51,6 @@ class FacebookGraph:
 
     def make_timestep(self):
         inf_degree = []
-        node_states = {}
-
         for n in self.G.nodes:
             if self.G.nodes[n]["state"] == 0:
                 neighbors = nx.all_neighbors(self.G, n)
@@ -64,14 +62,13 @@ class FacebookGraph:
                 # newly infected
                 if np.random.uniform() < inf_chance(n_inf_neighbors,
                                                          self.i):
-                    node_states[n] = 1
+                    self.node_states[n] = 1
                     inf_degree.append(total_neighbors)
 
-        nx.set_node_attributes(self.G, node_states, "state")
-
+        nx.set_node_attributes(self.G, self.node_states, "state")
         # track infected and susceptible counts
-        self.inf_count = np.sum(list(node_states.values()))
-        self.sus_count = len(node_states) - self.inf_count
+        self.inf_count = np.sum(list(self.node_states.values()))
+        self.sus_count = len(self.node_states) - self.inf_count
         self.infected_at_t.append(self.inf_count)
         self.susceptible_at_t.append(self.sus_count)
 
@@ -82,7 +79,7 @@ class FacebookGraph:
 
 def main():
     FbGraph = FacebookGraph()
-    print(FbGraph.node_states)
+    # print(FbGraph.node_states)
     FbGraph.draw_graph("Before", True)
 
     for i in range(FbGraph.time_steps):
