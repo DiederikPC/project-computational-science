@@ -15,13 +15,13 @@ class SocialGraph:
     """
         Class to represent a social network
     """
-    i = 0.001
-    i_init = 0.0001
-    time_steps = 1000
 
-    def __init__(self, edgelist):
+    def __init__(self, edgelist, i, i_init, time_steps):
         self.G = nx.read_edgelist(edgelist, delimiter=' ')
         nodes = self.G.nodes()
+        self.i = i
+        self.i_init = i_init
+        self.time_steps = time_steps
 
         # initialize node states
         states = np.zeros(len(nodes))
@@ -100,19 +100,3 @@ class SocialGraph:
         self.inf_degree_avg.append(np.mean(inf_degree))
 
         return self.inf_count
-
-
-def main():
-    FbGraph = SocialGraph('facebook_combined.txt')
-
-    # FbGraph.draw_graph("Before", True)
-
-    for i in range(FbGraph.time_steps):
-        print(f"Timestep {i}, infected nodes: {FbGraph.make_timestep()}")
-
-    # FbGraph.draw_graph("After", True)
-    FbGraph.show_infected_plot()
-
-
-if __name__ == "__main__":
-    main()
