@@ -19,6 +19,7 @@ class SocialGraph:
     def __init__(self, edgelist, i, i_init, time_steps):
         self.G = nx.read_edgelist(edgelist, delimiter=' ')
         nodes = self.G.nodes()
+        print(len(nodes))
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
