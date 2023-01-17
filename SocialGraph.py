@@ -13,14 +13,14 @@ def inf_chance(r, i):
 
 class SocialGraph:
     """
-        Class to represent a social network,
+        Class to represent a social network
     """
-    G = nx.read_edgelist('facebook_combined.txt', delimiter=' ')
     i = 0.001
     i_init = 0.0001
     time_steps = 1000
 
-    def __init__(self):
+    def __init__(self, edgelist):
+        self.G = nx.read_edgelist(edgelist, delimiter=' ')
         nodes = self.G.nodes()
 
         # initialize node states
@@ -74,7 +74,6 @@ class SocialGraph:
         """
             Make a single timestep. Infect new nodes and update statistics.
         """
-
         inf_degree = []
         for n in self.G.nodes:
             if self.G.nodes[n]["state"] == 0:
@@ -104,7 +103,8 @@ class SocialGraph:
 
 
 def main():
-    FbGraph = SocialGraph()
+    FbGraph = SocialGraph('facebook_combined.txt')
+
     # FbGraph.draw_graph("Before", True)
 
     for i in range(FbGraph.time_steps):
