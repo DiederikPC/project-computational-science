@@ -22,7 +22,7 @@ class SocialGraph:
     def __init__(self, edgelist):
         self.G = nx.read_edgelist(edgelist, delimiter=' ')
         nodes = self.G.nodes()
-
+        print(nodes)
         # initialize node states
         states = np.zeros(len(nodes))
         states[np.random.uniform(size=len(nodes)) < self.i_init] = 1
