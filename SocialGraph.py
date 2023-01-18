@@ -55,16 +55,18 @@ class SocialGraph:
         if show:
             plt.show()
 
-    def show_infected_plot(self):
+    def show_infected_plot(self, title):
         """
             Plot the amount of infected nodes in a graph.
         """
+        # normalize number of infected nodes
+        infected_at_t_percent = [i / len(self.G.nodes) for i in self.infected_at_t]
         plt.figure(figsize=(10, 10))
-        plt.plot(list(range(self.time_steps + 1)), self.infected_at_t)
+        plt.plot(list(range(self.time_steps + 1)), infected_at_t_percent)
         plt.xlabel("Timestep t")
         plt.ylabel("Amount infected nodes")
         plt.title("Amount of infected nodes at timestep t")
-        plt.savefig("infectedplt.png")
+        plt.savefig(title)
 
     def set_init_values(self, i, i_init):
         self.i = i
