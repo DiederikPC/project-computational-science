@@ -1,14 +1,20 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 
-G = nx.read_edgelist('facebook_combined.txt', delimiter=' ')
-degrees = sorted([degree for node, degree in G.degree()])
+facebook = nx.read_edgelist('facebook_combined.txt', delimiter=' ')
+facebook_degrees = sorted([degree for node, degree in facebook.degree()])
+
+ba = nx.read_edgelist('barabasi_albert.txt', delimiter=' ')
+ba_degrees = sorted([degree for node, degree in ba.degree()])
 
 
-fig, (ax1, ax2) = plt.subplots(2)
-fig.suptitle('Degree distribution (linear vs log)')
-ax1.hist(degrees, bins=40, density=True)
-ax2.hist(degrees, bins=40, density=True, log=True)
-plt.xlabel("Degree")
-plt.ylabel("Frequency")
+fig, axs = plt.subplots(2, 2)
+axs[0, 0].hist(facebook_degrees, density=True)
+axs[0, 0].set_title('Facebook degree distribution')
+axs[0, 1].hist(facebook_degrees, density=True, log=True)
+axs[0, 1].set_title('Facebook log degree distribution')
+axs[1, 0].hist(ba_degrees, density=True)
+axs[1, 0].set_title('BA degree distribution')
+axs[1, 1].hist(ba_degrees, density=True, log=True)
+axs[1, 1].set_title('BA log degree distribution')
 plt.show()
