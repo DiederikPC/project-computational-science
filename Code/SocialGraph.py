@@ -15,12 +15,8 @@ class SocialGraph:
     """
         Class to represent a social network
     """
-    def __init__(self, edgelist, i, i_init, time_steps):
-        self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
+    def initialize_states(self):
         nodes = self.G.nodes()
-        self.i = i
-        self.i_init = i_init
-        self.time_steps = time_steps
 
         # initialize node states
         states = np.zeros(len(nodes))
@@ -34,6 +30,16 @@ class SocialGraph:
         self.inf_degree_avg = []
         self.infected_at_t = [self.inf_count]
         self.susceptible_at_t = [self.sus_count]
+
+    def __init__(self, edgelist, i, i_init, time_steps):
+        self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
+        nodes = self.G.nodes()
+        self.i = i
+        self.i_init = i_init
+        self.time_steps = time_steps
+
+        self.initialize_states()
+
 
     def draw_graph(self, title, show=False):
         """
@@ -65,7 +71,7 @@ class SocialGraph:
         plt.xlabel("Timestep t")
         plt.ylabel("Amount infected nodes")
         plt.title("Amount of infected nodes at timestep t")
-        plt.savefig("../Plots/" + title)
+        plt.savefig(title)
 
     def set_init_values(self, i, i_init):
         self.i = i
