@@ -56,7 +56,7 @@ class SocialGraph:
 
         nx.draw(self.G, with_labels=False, node_color=node_colors,
                 node_size=20)
-        plt.savefig(title + ".png")
+        plt.savefig("../Plots/" + title + ".png")
         if show:
             plt.show()
 
@@ -71,7 +71,7 @@ class SocialGraph:
         plt.xlabel("Timestep t")
         plt.ylabel("Amount infected nodes")
         plt.title("Amount of infected nodes at timestep t")
-        plt.savefig(title)
+        plt.savefig("../Plots/" + title)
 
     def set_init_values(self, i, i_init):
         self.i = i

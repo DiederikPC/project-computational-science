@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 import networkx as nx
 
-facebook = nx.read_edgelist('facebook_combined.txt', delimiter=' ')
+facebook = nx.read_edgelist('../Data/facebook_combined.txt', delimiter=' ')
 facebook_degrees = sorted([degree for node, degree in facebook.degree()])
 
-ba = nx.read_edgelist('barabasi_albert.txt', delimiter=' ')
+ba = nx.read_edgelist('../Data/barabasi_albert.txt', delimiter=' ')
 ba_degrees = sorted([degree for node, degree in ba.degree()])
 
 

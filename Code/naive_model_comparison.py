@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from SocialGraph import SocialGraph
+from Code.SocialGraph import SocialGraph
 
 sims, i, i_init, time_steps = 40, 0.01, 0.1, 50
 
 # open the facebook and barabasi-albert networks
-facebook = SocialGraph("facebook_combined.txt", i, i_init, time_steps)
-BA = SocialGraph("barabasi_albert.txt", i, i_init, time_steps)
+facebook = SocialGraph("../Data/facebook_combined.txt", i, i_init, time_steps)
+BA = SocialGraph("../Data/barabasi_albert.txt", i, i_init, time_steps)
 
 surface = []
 for _ in range(sims):
