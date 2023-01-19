@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from Code.SocialGraph import SocialGraph
+from SocialGraph import SocialGraph
 
 sims, i, i_init, time_steps = 40, 0.01, 0.1, 50
 

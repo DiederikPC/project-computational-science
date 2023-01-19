@@ -15,6 +15,8 @@ class SocialGraph:
     """
         Class to represent a social network
     """
+    G = None
+
     def initialize_states(self):
         nodes = self.G.nodes()
 
@@ -33,7 +35,6 @@ class SocialGraph:
 
     def __init__(self, edgelist, i, i_init, time_steps):
         self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
-        nodes = self.G.nodes()
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
