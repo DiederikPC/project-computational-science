@@ -10,7 +10,8 @@ BA = SocialGraph("barabasi_albert.txt", i, i_init, time_steps)
 
 surface = []
 for _ in range(sims):
-    facebook.
+    facebook.initialize_states()
+    BA.initialize_states()
 
     # run simulation
     for _ in range(time_steps):
