@@ -8,15 +8,13 @@ def inf_chance(r, i):
     Calculates the chance of infection of a node given the total number of
     infected neighbors and the infection rate.
     """
-    return 1 - (1-i)**r
+    return 1 - (1 - i) ** r
 
 
 class SocialGraph:
     """
         Class to represent a social network
     """
-    G = None
-
     def initialize_states(self):
         nodes = self.G.nodes()
 
@@ -38,7 +36,7 @@ class SocialGraph:
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
-
+        self.edgelist = edgelist
         self.initialize_states()
 
 
@@ -54,12 +52,14 @@ class SocialGraph:
                 node_colors.append('red')
             else:
                 node_colors.append('blue')
+        print(self.edgelist)
 
         nx.draw(self.G, with_labels=False, node_color=node_colors,
                 node_size=20)
         plt.savefig("../Plots/" + title + ".png")
         if show:
             plt.show()
+        plt.close()
 
     def show_infected_plot(self, title):
         """
@@ -77,6 +77,13 @@ class SocialGraph:
     def set_init_values(self, i, i_init):
         self.i = i
         self.i_init = i_init
+
+    def update_stats(self):
+        # track infected and susceptible counts
+        self.inf_count = int(np.sum(list(self.node_states.values())))
+        self.sus_count = len(self.node_states) - self.inf_count
+        self.infected_at_t.append(self.inf_count)
+        self.susceptible_at_t.append(self.sus_count)
 
     def make_timestep(self):
         """
@@ -98,13 +105,13 @@ class SocialGraph:
                     inf_degree.append(total_neighbors)
 
         nx.set_node_attributes(self.G, self.node_states, "state")
-        # track infected and susceptible counts
-        self.inf_count = int(np.sum(list(self.node_states.values())))
-        self.sus_count = len(self.node_states) - self.inf_count
-        self.infected_at_t.append(self.inf_count)
-        self.susceptible_at_t.append(self.sus_count)
 
+        self.update_stats()
         # track average degree of newly infected nodes
-        self.inf_degree_avg.append(np.mean(inf_degree))
+        if len(inf_degree) == 0:
+            self.inf_degree_avg.append(0)
+        else:
+            self.inf_degree_avg.append(np.mean(inf_degree))
+
 
         return self.inf_count
