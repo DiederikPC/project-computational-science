@@ -16,6 +16,9 @@ class SocialGraph:
         Class to represent a social network
     """
     def initialize_states(self):
+        """
+            This is called in the __init__
+        """
         nodes = self.G.nodes()
 
         # initialize node states
@@ -73,12 +76,16 @@ class SocialGraph:
         plt.ylabel("Amount infected nodes")
         plt.title("Amount of infected nodes at timestep t")
         plt.savefig("../Plots/" + title)
+        plt.close()
 
     def set_init_values(self, i, i_init):
         self.i = i
         self.i_init = i_init
 
     def update_stats(self):
+        """
+        Update the statistics that change with each timestep.
+        """
         # track infected and susceptible counts
         self.inf_count = int(np.sum(list(self.node_states.values())))
         self.sus_count = len(self.node_states) - self.inf_count
