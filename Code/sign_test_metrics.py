@@ -8,7 +8,7 @@ from scipy.stats import ks_2samp
 # SIGNIFICANCE TEST OF DIFFERENCE IN DIFFERENT METRICS' DISTRIBUTION BETWEEN FB AND BA NETWORK
 
 #0. GENERAL PARAMETERS
-sims, i, i_init, time_steps, network_iters = 500, 0.01, 0.001, 30, 50
+sims, i, i_init, time_steps, network_iters = 500, 0.01, 0.001, 30, 100
 
 # 1. OBTAIN METRIC DISTRIBUTION FROM BA NETWORK 
 reach_list_BA = []
