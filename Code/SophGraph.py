@@ -17,7 +17,6 @@ def soph_inf_chance(n_neigh, n_inf_neigh, global_decay, time_step, ave_degree):
 
     return (probs[n_inf_neigh] * ave_degree) / ((1 + global_decay * time_step) * n_neigh)
 
-
 class SophGraph(SocialGraph):
     def __init__(self, edgelist, global_decay, i_init, time_steps):
         self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
