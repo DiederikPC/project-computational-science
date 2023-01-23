@@ -34,7 +34,8 @@ for i in range(sims):
         BA.make_timestep()
 
     # normalize number of infected nodes
-    facebook_percent = [i / len(facebook.G.nodes) for i in facebook.infected_at_t]
+    facebook_percent = [i / len(facebook.G.nodes)
+                        for i in facebook.infected_at_t]
     BA_percent = [i / len(BA.G.nodes) for i in BA.infected_at_t]
 
     diffs = [np.abs(fb - ba) for fb, ba in zip(facebook_percent, BA_percent)]
@@ -56,11 +57,11 @@ plt.savefig("../Plots/total_difference_distribution.png")
 
 # # plotting spread on both networks
 # plt.figure(figsize=(10, 10))
-# plt.plot(list(range(facebook.time_steps + 1)), facebook_percent, label='Facebook')
+# plt.plot(list(range(facebook.time_steps + 1)), facebook_percent,
+#          label='Facebook')
 # plt.plot(list(range(facebook.time_steps + 1)), BA_percent, label='BA')
 # plt.xlabel("Timestep t")
 # plt.ylabel("Amount infected nodes")
 # plt.title("Amount of infected nodes at timestep t")
 # plt.legend()
 # plt.savefig("naive_facebookvsBA.png")
-

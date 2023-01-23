@@ -3,7 +3,6 @@ import networkx as nx
 import numpy as np
 
 
-
 class SophGraph(SocialGraph):
     def soph_inf_chance(self, n_neigh, n_inf_neigh,):
         """
@@ -19,13 +18,15 @@ class SophGraph(SocialGraph):
         # stable value of 0.014
         if n_inf_neigh > 18:
             return ((0.014 * self.ave_degree) /
-                   ((1 + self.decay_rate * self.t) * n_neigh))
+                    ((1 + self.decay_rate * self.t) * n_neigh))
 
         return ((probs[n_inf_neigh] * self.ave_degree) /
-               ((1 + self.decay_rate * self.t) * n_neigh))
+                ((1 + self.decay_rate * self.t) * n_neigh))
 
-    def __init__(self, edgelist, i, i_init, time_steps, decay_rate):
-        super().__init__(edgelist, i, i_init, time_steps)
+    def __init__(self, i, i_init, time_steps, decay_rate, edgelist=None,
+                 is_barabasi=False):
+        super().__init__(i, i_init, time_steps, edgelist=edgelist,
+                         is_barabasi=is_barabasi)
         self.t = 1
         self.decay_rate = decay_rate
         self.ave_degree = self.G.number_of_edges() / self.G.number_of_nodes()
@@ -53,4 +54,3 @@ class SophGraph(SocialGraph):
 
         self.update_stats()
         self.current_timestep += 1
-

@@ -1,7 +1,7 @@
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
-from CreateModel import CreateModel
+
 
 def inf_chance(r, i):
     """
@@ -34,20 +34,22 @@ class SocialGraph:
         self.infected_at_t = [self.inf_count]
         self.susceptible_at_t = [self.sus_count]
 
-    def __init__(self, i, i_init, time_steps, edgelist=None, is_barabasi=False):
-        self.i = i
-        self.i_init = i_init
-        self.time_steps = time_steps
-        self.edgelist = edgelist
-        self.initialize_states()
-
-        if edgelist == None and not is_barabasi:
-            print("Need to either give and edgelist or set is_barabasi to true")
+    def __init__(self, i, i_init, time_steps, edgelist=None,
+                 is_barabasi=False):
+        if edgelist is None and not is_barabasi:
+            print("Need to either give and edgelist or set \
+                  is_barabasi to true")
             return
         if is_barabasi:
             self.G = nx.barabasi_albert_graph(4039, 20)
         else:
             self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
+
+        self.i = i
+        self.i_init = i_init
+        self.time_steps = time_steps
+        self.edgelist = edgelist
+        self.initialize_states()
 
     def draw_graph(self, title, show=False):
         """
@@ -63,7 +65,7 @@ class SocialGraph:
                 node_colors.append('blue')
         print(self.edgelist)
 
-        nx.draw(self.G, with_labels=False, node_color=node_colors,
+        nx.draw(self.G, with_labels=True, node_color=node_colors,
                 node_size=20)
         plt.savefig("../Plots/" + title + ".png")
         if show:
@@ -75,7 +77,8 @@ class SocialGraph:
             Plot the amount of infected nodes in a graph.
         """
         # normalize number of infected nodes
-        infected_at_t_percent = [i / len(self.G.nodes) for i in self.infected_at_t]
+        infected_at_t_percent = [i / len(self.G.nodes)
+                                 for i in self.infected_at_t]
         plt.figure(figsize=(10, 10))
         plt.plot(list(range(self.time_steps + 1)), infected_at_t_percent)
         plt.xlabel("Timestep t")
@@ -125,6 +128,5 @@ class SocialGraph:
             self.inf_degree_avg.append(0)
         else:
             self.inf_degree_avg.append(np.mean(inf_degree))
-
 
         return self.inf_count
