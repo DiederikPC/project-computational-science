@@ -1,7 +1,7 @@
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
-
+from CreateModel import CreateModel
 
 def inf_chance(r, i):
     """
@@ -17,7 +17,7 @@ class SocialGraph:
     """
     def initialize_states(self):
         """
-            This is called in the __init__
+            This is called only in the __init__
         """
         nodes = self.G.nodes()
 
@@ -34,14 +34,20 @@ class SocialGraph:
         self.infected_at_t = [self.inf_count]
         self.susceptible_at_t = [self.sus_count]
 
-    def __init__(self, edgelist, i, i_init, time_steps):
-        self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
+    def __init__(self, i, i_init, time_steps, edgelist=None, is_barabasi=False):
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
         self.edgelist = edgelist
         self.initialize_states()
 
+        if edgelist == None and not is_barabasi:
+            print("Need to either give and edgelist or set is_barabasi to true")
+            return
+        if is_barabasi:
+            self.G = nx.barabasi_albert_graph(4039, 20)
+        else:
+            self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
 
     def draw_graph(self, title, show=False):
         """

@@ -23,6 +23,7 @@ class SophGraph(SocialGraph):
 
         return ((probs[n_inf_neigh] * self.ave_degree) /
                ((1 + self.decay_rate * self.t) * n_neigh))
+
     def __init__(self, edgelist, i, i_init, time_steps, decay_rate):
         super().__init__(edgelist, i, i_init, time_steps)
         self.t = 1
