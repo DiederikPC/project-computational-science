@@ -26,6 +26,7 @@ class SophGraph(SocialGraph):
         super().__init__(edgelist, i, i_init, time_steps)
         self.t = 0
         self.decay_rate = decay_rate
+
     def make_timestep(self):
         """
             Make a single timestep. Infect new nodes and update statistics.
