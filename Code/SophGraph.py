@@ -1,10 +1,40 @@
 from SocialGraph import SocialGraph
 import networkx as nx
 import numpy as np
+import random
 
 
 class SophGraph(SocialGraph):
-    def soph_inf_chance(self, n_neigh, n_inf_neigh,):
+
+    def __init__(self, i, i_init, time_steps, decay_rate, edgelist=None,
+                 is_barabasi=False):
+        super().__init__(i, i_init, time_steps, edgelist=edgelist,
+                         is_barabasi=is_barabasi)
+        self.t = 1
+        self.decay_rate = decay_rate
+        self.ave_degree = self.G.number_of_edges() / self.G.number_of_nodes()
+
+    def initialize_cluster(self):
+        # set all nodes states to 0
+        nodes = self.G.nodes
+        self.node_states = dict(zip(nodes, np.zeros(len(nodes))))
+        self.update_stats()
+
+        print(sum(self.node_states.values()))
+        seed = random.choice([n for n in self.G.nodes])
+        cluster_size = self.i_init * len(self.G.nodes)
+        while self.inf_count <= cluster_size:
+
+            neighborhood = nx.all_neighbors(self.G, seed)
+            for n in nx.all_neighbors(self.G, seed):
+                if self.G.nodes[n]["state"] == 0 and self.inf_count <= cluster_size:
+                    self.node_states[n] = 1
+                    self.update_stats()
+
+            seed = random.choice([n for n in neighborhood])
+        print(sum(self.node_states.values()))
+
+    def soph_inf_chance(self, n_neigh, n_inf_neigh, ):
         """
         Returns the infection chance given number of infected neighbors r and
         global decay rate
@@ -22,14 +52,6 @@ class SophGraph(SocialGraph):
 
         return ((probs[n_inf_neigh] * self.ave_degree) /
                 ((1 + self.decay_rate * self.t) * n_neigh))
-
-    def __init__(self, i, i_init, time_steps, decay_rate, edgelist=None,
-                 is_barabasi=False):
-        super().__init__(i, i_init, time_steps, edgelist=edgelist,
-                         is_barabasi=is_barabasi)
-        self.t = 1
-        self.decay_rate = decay_rate
-        self.ave_degree = self.G.number_of_edges() / self.G.number_of_nodes()
 
     def make_timestep(self):
         """
@@ -54,3 +76,9 @@ class SophGraph(SocialGraph):
 
         self.update_stats()
         self.current_timestep += 1
+
+
+
+fb = SophGraph(0.01, 0.05, 0.01, 50, "../Data/facebook_combined.txt")
+fb.initialize_cluster()
+fb.draw_graph('start cluster', True)

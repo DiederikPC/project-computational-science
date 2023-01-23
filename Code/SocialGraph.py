@@ -65,7 +65,7 @@ class SocialGraph:
                 node_colors.append('blue')
         print(self.edgelist)
 
-        nx.draw(self.G, with_labels=True, node_color=node_colors,
+        nx.draw(self.G, with_labels=False, node_color=node_colors,
                 node_size=20)
         plt.savefig("../Plots/" + title + ".png")
         if show:
