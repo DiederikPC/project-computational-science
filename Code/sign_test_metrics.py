@@ -8,7 +8,7 @@ from scipy.stats import ks_2samp
 # SIGNIFICANCE TEST OF DIFFERENCE IN DIFFERENT METRICS' DISTRIBUTION BETWEEN FB AND BA NETWORK
 
 #0. GENERAL PARAMETERS
-sims, i, i_init, time_steps, network_iters = 500, 0.01, 0.001, 30, 100
+sims, i, i_init, time_steps, network_iters = 500, 0.01, 0.001, 30, 50
 
 # 1. OBTAIN METRIC DISTRIBUTION FROM BA NETWORK 
 reach_list_BA = []
@@ -18,7 +18,7 @@ speed_list_BA = []
 raw_deg_list_BA = []
 
 for iter in range(network_iters):
-    BA = SocialGraph(r"barabasi_albert.txt", i, i_init, time_steps)
+    BA = SocialGraph(i, i_init, time_steps, is_barabasi = True)
     speed_add = True
     for u in range(time_steps):
         BA.make_timestep()
@@ -43,7 +43,7 @@ speed_list_FB = []
 raw_deg_list_FB = []
 
 for iter in range(network_iters):
-    FB = SocialGraph(r"facebook_combined.txt", i, i_init, time_steps)
+    FB = SocialGraph(i, i_init, time_steps,edgelist = r"facebook_combined.txt")
     speed_add = True
     for u in range(time_steps):
         FB.make_timestep()
