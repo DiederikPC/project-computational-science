@@ -1,7 +1,6 @@
 from SocialGraph import SocialGraph
 import networkx as nx
 import numpy as np
-import random
 
 
 class SophGraph(SocialGraph):
@@ -11,8 +10,10 @@ class SophGraph(SocialGraph):
         super().__init__(i, i_init, time_steps, edgelist=edgelist,
                          is_barabasi=is_barabasi)
         self.t = 1
+
         self.decay_rate = decay_rate
         self.ave_degree = self.G.number_of_edges() / self.G.number_of_nodes()
+        self.initialize_cluster()
 
     def initialize_cluster(self):
         # set all nodes states to 0
@@ -20,16 +21,19 @@ class SophGraph(SocialGraph):
         self.node_states = dict(zip(nodes, np.zeros(len(nodes))))
         self.update_stats()
 
-        seed = random.choice(list(nodes))
+        seed = np.random.choice(list(nodes))
+        self.seed = seed
         cluster_size = self.i_init * len(nodes)
         while self.inf_count <= cluster_size:
             neighborhood = nx.all_neighbors(self.G, seed)
-            for n in neighborhood:
+            print(len(list( nx.all_neighbors(self.G, seed))))
+            for n in nx.all_neighbors(self.G, seed):
                 if nodes[n]["state"] == 0 and self.inf_count <= cluster_size:
                     self.node_states[n] = 1
                     self.update_stats()
 
-            seed = random.choice(list(neighborhood))
+            seed = np.random.choice(list(neighborhood))
+        nx.set_node_attributes(self.G, self.node_states, "state")
 
     def soph_inf_chance(self, n_neigh, n_inf_neigh, ):
         """
@@ -72,10 +76,14 @@ class SophGraph(SocialGraph):
         nx.set_node_attributes(self.G, self.node_states, "state")
 
         self.update_stats()
-        self.current_timestep += 1
+        self.t += 1
 
+    def find_furthest_inf_node(self):
+        longest = 0
+        for n in self.G.nodes:
+            if self.G.nodes[n]["state"] == 1:
+                shortest_path = nx.dijkstra_path_length(self.G, n, self.seed)
+                if shortest_path > longest:
+                    longest = shortest_path
 
-
-fb = SophGraph(0.01, 0.05, 0.01, 50, "../Data/facebook_combined.txt")
-fb.initialize_cluster()
-fb.draw_graph('start cluster', True)
+        return longest

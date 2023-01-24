@@ -44,13 +44,17 @@ class SocialGraph:
             self.G = nx.barabasi_albert_graph(4039, 20)
         else:
             self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
-
+            self.pos = None
+        print("Break 47")
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
         self.edgelist = edgelist
-        self.pos = nx.spring_layout(self.G)
+        print("Break 52")
+
+        print("Break 55")
         self.initialize_states()
+        print("Break 57")
 
     def draw_graph(self, title, show=False):
         """
@@ -58,7 +62,8 @@ class SocialGraph:
             node is blue.
         """
         node_colors = []
-
+        if self.pos is None:
+            self.pos = nx.spring_layout(self.G)
         for state in nx.get_node_attributes(self.G, "state").values():
             if state == 1:
                 node_colors.append('red')
@@ -136,3 +141,4 @@ class SocialGraph:
         inf = self.infected_at_t
         explosive_lst = [(inf[x+1]-inf[x])/len(self.nodes) for x in range(len(inf)-1)]
         return explosive_lst
+
