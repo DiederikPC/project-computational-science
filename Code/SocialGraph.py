@@ -49,6 +49,7 @@ class SocialGraph:
         self.i_init = i_init
         self.time_steps = time_steps
         self.edgelist = edgelist
+        self.pos = nx.spring_layout(self.G)
         self.initialize_states()
 
     def draw_graph(self, title, show=False):
@@ -65,7 +66,7 @@ class SocialGraph:
                 node_colors.append('blue')
         print(self.edgelist)
 
-        nx.draw(self.G, with_labels=False, node_color=node_colors,
+        nx.draw(self.G, self.pos, with_labels=False, node_color=node_colors,
                 node_size=20)
         plt.savefig("../Plots/" + title + ".png")
         if show:
