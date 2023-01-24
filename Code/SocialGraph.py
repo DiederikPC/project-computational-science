@@ -131,3 +131,8 @@ class SocialGraph:
             self.inf_degree_avg.append(np.mean(inf_degree))
 
         return self.inf_count
+
+    def explosiveness(self):
+        inf = self.infected_at_t
+        explosive_lst = [(inf[x+1]-inf[x])/len(self.nodes) for x in range(len(inf)-1)]
+        return explosive_lst
