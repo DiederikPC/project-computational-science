@@ -20,19 +20,16 @@ class SophGraph(SocialGraph):
         self.node_states = dict(zip(nodes, np.zeros(len(nodes))))
         self.update_stats()
 
-        print(sum(self.node_states.values()))
-        seed = random.choice([n for n in self.G.nodes])
-        cluster_size = self.i_init * len(self.G.nodes)
+        seed = random.choice(list(nodes))
+        cluster_size = self.i_init * len(nodes)
         while self.inf_count <= cluster_size:
-
             neighborhood = nx.all_neighbors(self.G, seed)
-            for n in nx.all_neighbors(self.G, seed):
-                if self.G.nodes[n]["state"] == 0 and self.inf_count <= cluster_size:
+            for n in neighborhood:
+                if nodes[n]["state"] == 0 and self.inf_count <= cluster_size:
                     self.node_states[n] = 1
                     self.update_stats()
 
-            seed = random.choice([n for n in neighborhood])
-        print(sum(self.node_states.values()))
+            seed = random.choice(list(neighborhood))
 
     def soph_inf_chance(self, n_neigh, n_inf_neigh, ):
         """
