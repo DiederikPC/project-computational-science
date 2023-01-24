@@ -10,7 +10,10 @@ from scipy.stats import ks_2samp
 #0. GENERAL PARAMETERS
 i, i_init, time_steps, network_iters = 0.01, 0.001, 30, 10
 
-# 1. OBTAIN METRIC DISTRIBUTION FROM BA NETWORK 
+def get_metrics():
+    pass
+
+# 1. OBTAIN METRIC DISTRIBUTION FROM BA NETWORK SI MODEL
 reach_list_BA = []
 
 # FOR THE MOMENT I DEFINE SPEED AS TIME STEPS UNTIL 80% POPULATION INFECTED
@@ -37,7 +40,7 @@ for i in range(time_steps):
 
 deg_list_BA = [np.mean(i) for i in BA_list_per_step]
 
-#2. OBTAIN METRIC DISTRIBUTION FROM FB NETWORK
+#2. OBTAIN METRIC DISTRIBUTION FROM FB NETWORK SOPH MODEL
 reach_list_FB = []
 speed_list_FB = []
 raw_deg_list_FB = []
@@ -54,8 +57,6 @@ for iter in range(network_iters):
     raw_deg_list_FB.append(FB.inf_degree_avg)
     reach_list_FB.append(FB.inf_count)
 
-
-# to be computed 
 FB_list_per_step = [[] for i in range(time_steps)]
 for i in range(time_steps):
     for u in range(network_iters):
@@ -63,6 +64,8 @@ for i in range(time_steps):
             FB_list_per_step[i].append(raw_deg_list_FB[u][i])
 
 deg_list_FB = [np.mean(i) for i in FB_list_per_step]
+
+
 
 #3. COMPARE METRIC DISTRIBUTIONS
 
