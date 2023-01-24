@@ -34,7 +34,3 @@ def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims):
     return metrics
 
 metrics_BA_SI = get_metrics(True,True,i,i_init,time_steps,decay_rate,sims)
-
-metrics_BA_SI
-
-
