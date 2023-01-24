@@ -2,95 +2,39 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 from SocialGraph import SocialGraph
+from SophGraph import SophGraph
 import math
 from scipy.stats import ks_2samp
 
 # SIGNIFICANCE TEST OF DIFFERENCE IN DIFFERENT METRICS' DISTRIBUTION BETWEEN FB AND BA NETWORK
 
-#0. GENERAL PARAMETERS
-i, i_init, time_steps, network_iters = 0.01, 0.001, 30, 10
+# GENERAL PARAMETERS
+i, i_init, time_steps, decay_rate, sims = 0.01, 0.001, 30, 0.01, 5
 
-def get_metrics():
-    pass
+def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims):
+    perct_list = []
+    early_deg = []
 
-# 1. OBTAIN METRIC DISTRIBUTION FROM BA NETWORK SI MODEL
-reach_list_BA = []
+    for iter in range(sims):
 
-# FOR THE MOMENT I DEFINE SPEED AS TIME STEPS UNTIL 80% POPULATION INFECTED
-speed_list_BA = []
-raw_deg_list_BA = []
+        # DEFINE MODEL 
+        if is_SI:
+            graph = SocialGraph(i, i_init, time_steps, "facebook_combined.txt", is_BA)
+        else:
+            graph = SophGraph(i, i_init, time_steps, decay_rate, "facebook_combined.txt", is_BA)
 
-for iter in range(network_iters):
-    BA = SocialGraph(i, i_init, time_steps, is_barabasi = True)
-    speed_add = True
-    for u in range(time_steps):
-        BA.make_timestep()
-        if (BA.inf_count/len(BA.G.nodes()) >= 0.8) and (speed_add):
-            speed_list_BA.append(u)          
-            speed_add = False
-    
-    raw_deg_list_BA.append(BA.inf_degree_avg)
-    reach_list_BA.append(BA.inf_count)
-
-BA_list_per_step = [[] for i in range(time_steps)]
-for i in range(time_steps):
-    for u in range(network_iters):
-        if math.isnan(raw_deg_list_BA[u][i]) == False: 
-            BA_list_per_step[i].append(raw_deg_list_BA[u][i])
-
-deg_list_BA = [np.mean(i) for i in BA_list_per_step]
-
-#2. OBTAIN METRIC DISTRIBUTION FROM FB NETWORK SOPH MODEL
-reach_list_FB = []
-speed_list_FB = []
-raw_deg_list_FB = []
-
-for iter in range(network_iters):
-    FB = SocialGraph(i, i_init, time_steps,edgelist = r"facebook_combined.txt")
-    speed_add = True
-    for u in range(time_steps):
-        FB.make_timestep()
-        if (FB.inf_count/len(FB.G.nodes()) >= 0.8) and (speed_add):
-            speed_list_FB.append(u)          
-            speed_add = False
-    
-    raw_deg_list_FB.append(FB.inf_degree_avg)
-    reach_list_FB.append(FB.inf_count)
-
-FB_list_per_step = [[] for i in range(time_steps)]
-for i in range(time_steps):
-    for u in range(network_iters):
-        if math.isnan(raw_deg_list_FB[u][i]) == False:
-            FB_list_per_step[i].append(raw_deg_list_FB[u][i])
-
-deg_list_FB = [np.mean(i) for i in FB_list_per_step]
+        for u in range(time_steps):
+            graph.make_timestep()
+        
+        early_deg.append(np.mean(graph.inf_degree_avg[:10]))
+        perct_list.append(graph.inf_count)
 
 
+    metrics = {'perct_list': perct_list, 'early_deg': early_deg}
+    return metrics
 
-#3. COMPARE METRIC DISTRIBUTIONS
+metrics_BA_SI = get_metrics(True,True,i,i_init,time_steps,decay_rate,sims)
 
-# KOLMOGOROV-SMIRNOV TO TEST DIFFERENCE BETWEEN REACH AND SPEED DISTRIBUTIONS
-ks_2samp(reach_list_BA,reach_list_FB)
-ks_2samp(speed_list_BA,speed_list_FB)
-
-
-# PLOT COMPARING REACH (SAME SHOULD BE DONE FOR SPEED)
-plt.hist(reach_list_BA,bins = 30,label = 'BA')
-plt.hist(reach_list_FB,color = 'red',bins = 30,label = 'FB')
-plt.legend()
-plt.show()
-
-# PLOT COMPARING SPEED 
-plt.hist(speed_list_BA,bins = 10,label = 'BA')
-plt.hist(speed_list_FB, bins = 10, color = 'red',label = 'FB')
-plt.legend()
-plt.show()
-
-# PLOT COMPARING DEGREE INFECTED NODES PER TIMESETP 
-plt.plot(range(time_steps),deg_list_BA,color = 'red',label = 'BA')
-plt.plot(range(time_steps),deg_list_FB,color = 'blue',label = 'FB')
-plt.legend()
-plt.show()
-
+metrics_BA_SI
 
 
