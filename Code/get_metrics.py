@@ -18,17 +18,17 @@ def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims):
 
     for iter in range(sims):
 
-        # DEFINE MODEL 
+        # DEFINE MODEL
         if is_SI:
             graph = SocialGraph(i, i_init, time_steps, "facebook_combined.txt", is_BA)
         else:
             graph = SophGraph(i, i_init, time_steps, decay_rate, "facebook_combined.txt", is_BA)
 
         for u in range(time_steps):
-            graph.make_timestep()   
-        
-        if is_SI == False: 
-            reach_list.append(graph.find_furthest_inf_node())
+            graph.make_timestep()
+
+        if is_SI == False:
+            reach_list.append(graph.determine_reach())
         early_deg.append(np.mean(graph.inf_degree_avg[:10]))
         perct_list.append(graph.inf_count)
 

@@ -26,7 +26,6 @@ class SophGraph(SocialGraph):
         cluster_size = self.i_init * len(nodes)
         while self.inf_count <= cluster_size:
             neighborhood = nx.all_neighbors(self.G, seed)
-            print(len(list( nx.all_neighbors(self.G, seed))))
             for n in nx.all_neighbors(self.G, seed):
                 if nodes[n]["state"] == 0 and self.inf_count <= cluster_size:
                     self.node_states[n] = 1
@@ -78,7 +77,14 @@ class SophGraph(SocialGraph):
         self.update_stats()
         self.t += 1
 
-    def find_furthest_inf_node(self):
+        if len(inf_degree) == 0:
+            self.inf_degree_avg.append(0)
+        else:
+            self.inf_degree_avg.append(np.mean(inf_degree))
+
+        return self.inf_count
+
+    def determine_reach(self):
         longest = 0
         for n in self.G.nodes:
             if self.G.nodes[n]["state"] == 1:
