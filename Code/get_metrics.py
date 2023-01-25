@@ -39,3 +39,5 @@ def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims):
 metrics_BA_SI = get_metrics(False,True,i,i_init,time_steps,decay_rate,sims)
 
 metrics_BA_SI
+
+# GET MSE FROM TWO NETWORKS
