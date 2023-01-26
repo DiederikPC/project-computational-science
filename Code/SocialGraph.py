@@ -15,6 +15,15 @@ class SocialGraph:
     """
         Class to represent a social network
     """
+
+    def set_init_stats(self):
+
+        self.inf_count = np.sum(self.node_states)
+        self.sus_count = len(self.G.nodes) - self.inf_count
+        self.inf_degree_avg = []
+        self.infected_at_t = [self.inf_count]
+        self.susceptible_at_t = [self.sus_count]
+
     def initialize_states(self):
         """
             This is called only in the __init__
@@ -24,15 +33,11 @@ class SocialGraph:
         # initialize node states
         states = np.zeros(len(nodes))
         states[np.random.uniform(size=len(nodes)) < self.i_init] = 1
-        node_states = dict(zip(nodes, states))
+        self.node_states = dict(zip(nodes, states))
 
-        nx.set_node_attributes(self.G, node_states, "state")
-        self.inf_count = np.sum(states)
-        self.sus_count = len(nodes) - self.inf_count
-        self.node_states = node_states
-        self.inf_degree_avg = []
-        self.infected_at_t = [self.inf_count]
-        self.susceptible_at_t = [self.sus_count]
+        nx.set_node_attributes(self.G, self.node_states, "state")
+        self.set_init_stats()
+
 
     def __init__(self, i, i_init, time_steps, edgelist=None,
                  is_barabasi=False):

@@ -19,12 +19,12 @@ class SophGraph(SocialGraph):
         # set all nodes states to 0
         nodes = self.G.nodes
         self.node_states = dict(zip(nodes, np.zeros(len(nodes))))
-        self.update_stats()
 
         seed = np.random.choice(list(nodes))
         self.seed = seed
         self.node_states[seed] = 1
         cluster_size = self.i_init * len(nodes)
+
         while self.inf_count <= cluster_size:
             neighborhood = nx.all_neighbors(self.G, seed)
             for n in nx.all_neighbors(self.G, seed):
@@ -34,6 +34,7 @@ class SophGraph(SocialGraph):
 
             seed = np.random.choice(list(neighborhood))
         nx.set_node_attributes(self.G, self.node_states, "state")
+        self.set_init_stats(node_states)
 
     def soph_inf_chance(self, n_neigh, n_inf_neigh, ):
         """
@@ -78,7 +79,6 @@ class SophGraph(SocialGraph):
         self.update_stats()
         self.t += 1
 
-<<<<<<< Updated upstream
         if len(inf_degree) == 0:
             self.inf_degree_avg.append(0)
         else:
@@ -86,8 +86,6 @@ class SophGraph(SocialGraph):
 
         return self.inf_count
 
-=======
->>>>>>> Stashed changes
     def determine_reach(self):
         longest = 0
         nodes = np.array(list(self.G.nodes))
@@ -96,13 +94,7 @@ class SophGraph(SocialGraph):
         for node in nodes[np.where(values == 0)]:
             copyG.remove_node(node)
 
-        # longest = list((nx.single_source_shortest_path_length(copyG,
-        #                                                       self.seed)).
-        #                                                       values())[-1]
-        nodes = np.array(list(copyG.nodes))
-        for n in nodes:
-            shortest_path = nx.dijkstra_path_length(copyG, n, self.seed)
-            if shortest_path > longest:
-                longest = shortest_path
-
+        longest = list((nx.single_source_shortest_path_length(copyG,
+                                                              self.seed)).
+                                                              values())[-1]
         return longest
