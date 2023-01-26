@@ -40,7 +40,7 @@ def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims,threshold):
         speed_list.append(np.mean(difs))
 
         if not is_SI:
-            reach_list.append(graph.find_furthest_inf_node())
+            reach_list.append(graph.determine_reach())
 
         early_deg.append(np.mean(graph.inf_degree_avg[:10]))
         perct_list.append(graph.inf_count)
