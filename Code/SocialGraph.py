@@ -18,7 +18,8 @@ class SocialGraph:
 
     def set_init_stats(self):
 
-        self.inf_count = np.sum(self.node_states)
+        # print(self.node_states.values())
+        self.inf_count = np.sum(list(self.node_states.values()))
         self.sus_count = len(self.G.nodes) - self.inf_count
         self.inf_degree_avg = []
         self.infected_at_t = [self.inf_count]
@@ -55,8 +56,7 @@ class SocialGraph:
             self.G = nx.barabasi_albert_graph(4039, 22)
         else:
             self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
-            self.pos = None
-
+            self.pos == None
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
@@ -71,7 +71,8 @@ class SocialGraph:
             node is blue.
         """
         node_colors = []
-        if self.pos is None:
+        if self.edgelist is not None and self.pos == None:
+            print(f"SKEEBADABADABAP {self.edgelist}")
             self.pos = nx.spring_layout(self.G)
         for state in nx.get_node_attributes(self.G, "state").values():
             if state == 1:
@@ -79,9 +80,12 @@ class SocialGraph:
             else:
                 node_colors.append('blue')
         print(self.edgelist)
-
-        nx.draw(self.G, self.pos, with_labels=False, node_color=node_colors,
-                node_size=20)
+        if self.edgelist is not None:
+            nx.draw(self.G, self.pos, with_labels=False, node_color=node_colors,
+                    node_size=20)
+        else:
+            nx.draw(self.G, with_labels=False, node_color=node_colors,
+                    node_size=20)
         plt.savefig("../Plots/" + title + ".png")
         if show:
             plt.show()
@@ -103,12 +107,6 @@ class SocialGraph:
         plt.savefig("../Plots/" + title)
         plt.close()
 
-
-    def set_init_values(self, i, i_init):
-        self.i = i
-        self.i_init = i_init
-
-
     def update_stats(self):
         """
         Update the statistics that change with each timestep.
@@ -125,7 +123,7 @@ class SocialGraph:
             Make a single timestep. Infect new nodes and update statistics.
         """
         self.current_t += 1
-        
+
         inf_degree = []
         for n in self.G.nodes:
             if self.G.nodes[n]["state"] == 0:
@@ -183,7 +181,7 @@ class SocialGraph:
         for centrality in centralities:
             for i, (node, _) in enumerate(centrality):
                 centrality_scores[str(node)] += i
-        
+
         centrality_scores = sorted(centrality_scores.items(), key=lambda x: x[1])
 
         # get most influential nodes with cutoff point (100)

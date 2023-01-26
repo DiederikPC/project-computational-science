@@ -34,7 +34,7 @@ class SophGraph(SocialGraph):
 
             seed = np.random.choice(list(neighborhood))
         nx.set_node_attributes(self.G, self.node_states, "state")
-        self.set_init_stats(node_states)
+        self.set_init_stats()
 
     def soph_inf_chance(self, n_neigh, n_inf_neigh, ):
         """
