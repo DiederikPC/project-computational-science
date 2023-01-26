@@ -13,6 +13,7 @@ from scipy.stats import ks_2samp
 i, i_init, time_steps, decay_rate, sims = 0.01, 0.001, 30, 0.01, 5
 threshold = 300
 
+
 def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims,threshold):
 
     # THE FOUR METRICS
@@ -24,8 +25,8 @@ def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims,threshold):
     # USED FOR CALCULATING MSE
     infected_at_t = []
 
-
     for iter in range(sims):
+        print("Current sim:", iter)
 
         # DEFINE MODEL
         if is_SI:
@@ -50,6 +51,3 @@ def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims,threshold):
     metrics = {'infec_list': infec_list, 'early_deg': early_deg,'reach_list':reach_list,'infected_at_t':infected_at_t,'speed_list':speed_list}
     return metrics
 
-metrics_BA_SI = get_metrics(True,True,i,i_init,time_steps,decay_rate,sims,threshold)
-
-# GET MSE FROM TWO NETWORKS
