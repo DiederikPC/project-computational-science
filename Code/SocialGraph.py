@@ -45,16 +45,11 @@ class SocialGraph:
         else:
             self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
             self.pos = None
-        print("Break 47")
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
         self.edgelist = edgelist
-        print("Break 52")
-
-        print("Break 55")
         self.initialize_states()
-        print("Break 57")
 
     def draw_graph(self, title, show=False):
         """

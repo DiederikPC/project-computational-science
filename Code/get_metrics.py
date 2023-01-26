@@ -26,7 +26,7 @@ def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims,threshold):
 
     for iter in range(sims):
 
-        # DEFINE MODEL 
+        # DEFINE MODEL
         if is_SI:
             graph = SocialGraph(i, i_init, time_steps, "facebook_combined.txt", is_BA)
         else:
