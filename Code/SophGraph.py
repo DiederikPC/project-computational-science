@@ -89,12 +89,13 @@ class SophGraph(SocialGraph):
     def determine_reach(self):
         longest = 0
         nodes = np.array(list(self.G.nodes))
-        values = np.array(list(nx.get_node_attributes(self.G, "state").values()))
+        values = np.array(list(nx.get_node_attributes(self.G,
+                                                      "state").values()))
         copyG = self.G.copy()
         for node in nodes[np.where(values == 0)]:
             copyG.remove_node(node)
 
         longest = list((nx.single_source_shortest_path_length(copyG,
                                                               self.seed)).
-                                                              values())[-1]
+                       values())[-1]
         return longest
