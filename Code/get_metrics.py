@@ -15,7 +15,7 @@ threshold = 300
 def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims,threshold):
 
     # THE FOUR METRICS
-    perct_list = []
+    infec_list = []
     early_deg = []
     reach_list = []
     speed_list = []
@@ -39,14 +39,14 @@ def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims,threshold):
         difs = [speed_t[i+1] - speed_t[i] for i in range(len(speed_t)-2)]
         speed_list.append(np.mean(difs))
 
-        if not is_SI:
-            reach_list.append(graph.determine_reach())
+        # if not is_SI:
+        #     reach_list.append(graph.determine_reach())
 
         early_deg.append(np.mean(graph.inf_degree_avg[:10]))
-        perct_list.append(graph.inf_count)
+        infec_list.append(graph.inf_count)
         infected_at_t.append(graph.infected_at_t)
 
-    metrics = {'perct_list': perct_list, 'early_deg': early_deg,'reach_list':reach_list,'infected_at_t':infected_at_t,'speed_list':speed_list}
+    metrics = {'perct_list': infec_list, 'early_deg': early_deg,'reach_list':reach_list,'infected_at_t':infected_at_t,'speed_list':speed_list}
     return metrics
 
 metrics_BA_SI = get_metrics(True,True,i,i_init,time_steps,decay_rate,sims,threshold)
