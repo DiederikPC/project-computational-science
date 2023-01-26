@@ -56,7 +56,7 @@ class SocialGraph:
             self.G = nx.barabasi_albert_graph(4039, 22)
         else:
             self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
-            self.pos == None
+            self.pos = None
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
