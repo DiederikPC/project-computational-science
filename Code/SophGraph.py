@@ -78,6 +78,7 @@ class SophGraph(SocialGraph):
         self.update_stats()
         self.t += 1
 
+<<<<<<< Updated upstream
         if len(inf_degree) == 0:
             self.inf_degree_avg.append(0)
         else:
@@ -85,6 +86,8 @@ class SophGraph(SocialGraph):
 
         return self.inf_count
 
+=======
+>>>>>>> Stashed changes
     def determine_reach(self):
         longest = 0
         nodes = np.array(list(self.G.nodes))
