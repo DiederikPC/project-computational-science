@@ -34,6 +34,12 @@ class SocialGraph:
         self.infected_at_t = [self.inf_count]
         self.susceptible_at_t = [self.sus_count]
 
+        self.got_infected_at = {}
+        for node in self.G.nodes:
+            if self.G.nodes[node]['state'] == 1:
+                self.got_infected_at[node] = 0
+
+
     def __init__(self, i, i_init, time_steps, edgelist=None,
                  is_barabasi=False):
         if edgelist is None and not is_barabasi:
@@ -41,20 +47,18 @@ class SocialGraph:
                   is_barabasi to true")
             return
         if is_barabasi:
-            self.G = nx.barabasi_albert_graph(4039, 20)
+            self.G = nx.barabasi_albert_graph(4039, 22)
         else:
             self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
             self.pos = None
-        print("Break 47")
+
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
         self.edgelist = edgelist
-        print("Break 52")
-
-        print("Break 55")
+        self.current_t = 0
         self.initialize_states()
-        print("Break 57")
+
 
     def draw_graph(self, title, show=False):
         """
@@ -78,6 +82,7 @@ class SocialGraph:
             plt.show()
         plt.close()
 
+
     def show_infected_plot(self, title):
         """
             Plot the amount of infected nodes in a graph.
@@ -93,9 +98,11 @@ class SocialGraph:
         plt.savefig("../Plots/" + title)
         plt.close()
 
+
     def set_init_values(self, i, i_init):
         self.i = i
         self.i_init = i_init
+
 
     def update_stats(self):
         """
@@ -107,10 +114,13 @@ class SocialGraph:
         self.infected_at_t.append(self.inf_count)
         self.susceptible_at_t.append(self.sus_count)
 
+
     def make_timestep(self):
         """
             Make a single timestep. Infect new nodes and update statistics.
         """
+        self.current_t += 1
+        
         inf_degree = []
         for n in self.G.nodes:
             if self.G.nodes[n]["state"] == 0:
@@ -125,6 +135,7 @@ class SocialGraph:
                                                     self.i):
                     self.node_states[n] = 1
                     inf_degree.append(total_neighbors)
+                    self.got_infected_at[n] = self.current_t
 
         nx.set_node_attributes(self.G, self.node_states, "state")
 
@@ -137,8 +148,57 @@ class SocialGraph:
 
         return self.inf_count
 
-    def explosiveness(self):
+
+    def calculate_explosiveness(self):
         inf = self.infected_at_t
-        explosive_lst = [(inf[x+1]-inf[x])/len(self.nodes) for x in range(len(inf)-1)]
+        explosive_lst = [(inf[x+1]-inf[x])/len(self.G.nodes()) for x in range(len(inf)-1)]
         return explosive_lst
 
+
+    def get_clustering_coeff(self):
+        return nx.average_clustering(self.G)
+
+
+    def get_influential_nodes(self, visualize=False):
+
+        # calculate node centralities
+        degree_centrality = nx.degree_centrality(self.G)
+        sorted_degree = sorted(degree_centrality.items(), key=lambda x: x[1], reverse=True)
+
+        betweenness_centrality = nx.betweenness_centrality(self.G)
+        sorted_betweenness = sorted(betweenness_centrality.items(), key=lambda x: x[1], reverse=True)
+
+        closeness_centrality = nx.closeness_centrality(self.G)
+        sorted_closeness = sorted(closeness_centrality.items(), key=lambda x: x[1], reverse=True)
+
+        # calculate individual node influence scores (the lower the better)
+        centralities = [sorted_degree, sorted_betweenness, sorted_closeness]
+        centrality_scores = {str(node): 0 for node in self.G.nodes()}
+
+        for centrality in centralities:
+            for i, (node, _) in enumerate(centrality):
+                centrality_scores[str(node)] += i
+        
+        centrality_scores = sorted(centrality_scores.items(), key=lambda x: x[1])
+
+        # get most influential nodes with cutoff point (100)
+        most_inf_nodes = [node for (node, score) in centrality_scores if score <= 100]
+        self.most_inf_nodes = most_inf_nodes
+        print(f'Most influential nodes as a combination of degree, betweenness and closeness centrality:\n{most_inf_nodes}')
+
+        # visualize influential nodes
+        if visualize:
+            colors = []
+            size = []
+            for node in self.G.nodes():
+                if str(node) in most_inf_nodes:
+                    colors.append('red')
+                    size.append(100)
+                else:
+                    colors.append('blue')
+                    size.append(2)
+
+            nx.draw(self.G, with_labels=False, node_color=colors, node_size=size)
+            plt.show()
+
+        return most_inf_nodes
