@@ -41,7 +41,7 @@ class SocialGraph:
                   is_barabasi to true")
             return
         if is_barabasi:
-            self.G = nx.barabasi_albert_graph(4039, 20)
+            self.G = nx.barabasi_albert_graph(4039, 22)
         else:
             self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
             self.pos = None
