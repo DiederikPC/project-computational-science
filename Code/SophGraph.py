@@ -49,10 +49,10 @@ class SophGraph(SocialGraph):
         # if the number of infected neighbors is larger than 18 we assume
         # stable value of 0.014
         if n_inf_neigh > 18:
-            return ((0.014 * self.ave_degree) /
+            return self.i * ((0.014 * self.ave_degree) /
                     ((1 + self.decay_rate * self.t) * n_neigh))
 
-        return ((probs[n_inf_neigh] * self.ave_degree) /
+        return self.i * ((probs[n_inf_neigh] * self.ave_degree) /
                 ((1 + self.decay_rate * self.t) * n_neigh))
 
     def make_timestep(self):
