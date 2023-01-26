@@ -23,10 +23,10 @@ class SophGraph(SocialGraph):
 
         seed = np.random.choice(list(nodes))
         self.seed = seed
+        self.node_states[seed] = 1
         cluster_size = self.i_init * len(nodes)
         while self.inf_count <= cluster_size:
             neighborhood = nx.all_neighbors(self.G, seed)
-            print(len(list( nx.all_neighbors(self.G, seed))))
             for n in nx.all_neighbors(self.G, seed):
                 if nodes[n]["state"] == 0 and self.inf_count <= cluster_size:
                     self.node_states[n] = 1
@@ -78,12 +78,28 @@ class SophGraph(SocialGraph):
         self.update_stats()
         self.t += 1
 
-    def find_furthest_inf_node(self):
+        if len(inf_degree) == 0:
+            self.inf_degree_avg.append(0)
+        else:
+            self.inf_degree_avg.append(np.mean(inf_degree))
+
+        return self.inf_count
+
+    def determine_reach(self):
         longest = 0
-        for n in self.G.nodes:
-            if self.G.nodes[n]["state"] == 1:
-                shortest_path = nx.dijkstra_path_length(self.G, n, self.seed)
-                if shortest_path > longest:
-                    longest = shortest_path
+        nodes = np.array(list(self.G.nodes))
+        values = np.array(list(nx.get_node_attributes(self.G, "state").values()))
+        copyG = self.G.copy()
+        for node in nodes[np.where(values == 0)]:
+            copyG.remove_node(node)
+
+        # longest = list((nx.single_source_shortest_path_length(copyG,
+        #                                                       self.seed)).
+        #                                                       values())[-1]
+        nodes = np.array(list(copyG.nodes))
+        for n in nodes:
+            shortest_path = nx.dijkstra_path_length(copyG, n, self.seed)
+            if shortest_path > longest:
+                longest = shortest_path
 
         return longest
