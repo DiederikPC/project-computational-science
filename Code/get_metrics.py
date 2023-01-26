@@ -47,7 +47,7 @@ def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims,threshold):
         infec_list.append(graph.inf_count)
         infected_at_t.append(graph.infected_at_t)
 
-    metrics = {'perct_list': infec_list, 'early_deg': early_deg,'reach_list':reach_list,'infected_at_t':infected_at_t,'speed_list':speed_list}
+    metrics = {'infec_list': infec_list, 'early_deg': early_deg,'reach_list':reach_list,'infected_at_t':infected_at_t,'speed_list':speed_list}
     return metrics
 
 metrics_BA_SI = get_metrics(True,True,i,i_init,time_steps,decay_rate,sims,threshold)
