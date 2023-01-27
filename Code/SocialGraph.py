@@ -53,10 +53,11 @@ class SocialGraph:
         else:
             self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
             self.pos = None
+            self.edgelist = edgelist
+
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
-        self.edgelist = edgelist
         self.current_t = 0
         self.initialize_states()
 
