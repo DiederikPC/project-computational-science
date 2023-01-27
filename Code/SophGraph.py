@@ -93,13 +93,8 @@ class SophGraph(SocialGraph):
         for node in nodes[np.where(values == 0)]:
             copyG.remove_node(node)
 
-        # longest = list((nx.single_source_shortest_path_length(copyG,
-        #                                                       self.seed)).
-        #                                                       values())[-1]
-        nodes = np.array(list(copyG.nodes))
-        for n in nodes:
-            shortest_path = nx.dijkstra_path_length(copyG, n, self.seed)
-            if shortest_path > longest:
-                longest = shortest_path
+        longest = list((nx.single_source_shortest_path_length(copyG,
+                                                              self.seed)).
+                                                              values())[-1]
 
         return longest
