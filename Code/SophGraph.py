@@ -19,12 +19,12 @@ class SophGraph(SocialGraph):
         # set all nodes states to 0
         nodes = self.G.nodes
         self.node_states = dict(zip(nodes, np.zeros(len(nodes))))
-        self.update_stats()
 
         seed = np.random.choice(list(nodes))
         self.seed = seed
         self.node_states[seed] = 1
         cluster_size = self.i_init * len(nodes)
+
         while self.inf_count <= cluster_size:
             neighborhood = nx.all_neighbors(self.G, seed)
             for n in nx.all_neighbors(self.G, seed):
@@ -34,6 +34,7 @@ class SophGraph(SocialGraph):
 
             seed = np.random.choice(list(neighborhood))
         nx.set_node_attributes(self.G, self.node_states, "state")
+        self.set_init_stats()
 
     def soph_inf_chance(self, n_neigh, n_inf_neigh, ):
         """
@@ -48,10 +49,10 @@ class SophGraph(SocialGraph):
         # if the number of infected neighbors is larger than 18 we assume
         # stable value of 0.014
         if n_inf_neigh > 18:
-            return ((0.014 * self.ave_degree) /
+            return self.i * ((0.014 * self.ave_degree) /
                     ((1 + self.decay_rate * self.t) * n_neigh))
 
-        return ((probs[n_inf_neigh] * self.ave_degree) /
+        return self.i * ((probs[n_inf_neigh] * self.ave_degree) /
                 ((1 + self.decay_rate * self.t) * n_neigh))
 
     def make_timestep(self):
@@ -88,13 +89,18 @@ class SophGraph(SocialGraph):
     def determine_reach(self):
         longest = 0
         nodes = np.array(list(self.G.nodes))
-        values = np.array(list(nx.get_node_attributes(self.G, "state").values()))
+        values = np.array(list(nx.get_node_attributes(self.G,
+                                                      "state").values()))
         copyG = self.G.copy()
         for node in nodes[np.where(values == 0)]:
             copyG.remove_node(node)
 
         longest = list((nx.single_source_shortest_path_length(copyG,
                                                               self.seed)).
+<<<<<<< HEAD
                                                               values())[-1]
 
+=======
+                       values())[-1]
+>>>>>>> 91be69512e5019281ba8072357137dd5b295969c
         return longest
