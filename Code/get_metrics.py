@@ -54,3 +54,14 @@ def get_metrics(is_SI, is_BA, i, i_init, time_steps, decay_rate, sims,
                'reach_list': reach_list, 'infected_at_t': infected_at_t,
                'speed_list': speed_list}
     return metrics
+
+# function to get average error percentage
+def average_error_percent(FB, BA):
+    """
+    Returns the average percentage difference between Facebook and
+    Barabasi-Albert values. Arguments are a list for a metric for FB and a list
+    for the same metric for BA
+    """
+    return np.mean((np.abs(np.array(BA) - np.array(FB)) / np.array(BA)))
+
+# average_error_percent(SI_FB_results['speed_list'], SI_BA_results['speed_list'])
