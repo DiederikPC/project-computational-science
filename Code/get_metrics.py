@@ -1,10 +1,7 @@
-import networkx as nx
 import numpy as np
-import matplotlib.pyplot as plt
 from SocialGraph import SocialGraph
 from SophGraph import SophGraph
-import math
-from scipy.stats import ks_2samp
+
 
 # SIGNIFICANCE TEST OF DIFFERENCE IN DIFFERENT METRICS' DISTRIBUTION BETWEEN FB
 # AND BA NETWORK
@@ -14,7 +11,8 @@ i, i_init, time_steps, decay_rate, sims = 0.01, 0.001, 30, 0.01, 5
 threshold = 300
 
 
-def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims,threshold):
+def get_metrics(is_SI, is_BA, i, i_init, time_steps, decay_rate, sims,
+                threshold):
 
     # THE FOUR METRICS
     infec_list = []
@@ -30,14 +28,18 @@ def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims,threshold):
 
         # DEFINE MODEL
         if is_SI:
-            graph = SocialGraph(i, i_init, time_steps, "facebook_combined.txt", is_BA)
+            graph = SocialGraph(i, i_init, time_steps,
+                                "facebook_combined.txt", is_BA)
         else:
-            graph = SophGraph(i, i_init, time_steps, decay_rate, "facebook_combined.txt", is_BA)
+            graph = SophGraph(i, i_init, time_steps, decay_rate,
+                              "facebook_combined.txt", is_BA)
 
         for u in range(time_steps):
             graph.make_timestep()
 
-        speed_t = graph.infected_at_t[:np.where((np.absolute(np.array(graph.infected_at_t) - graph.infected_at_t[-1]) < threshold))[0][0]]
+        inf_diff = np.absolute(np.array(graph.infected_at_t) -
+                               graph.infected_at_t[-1]) < threshold
+        speed_t = graph.infected_at_t[:np.where(inf_diff)[0][0]]
         difs = [speed_t[i+1] - speed_t[i] for i in range(len(speed_t)-2)]
         speed_list.append(np.mean(difs))
 
@@ -48,6 +50,7 @@ def get_metrics(is_SI, is_BA,i,i_init,time_steps,decay_rate,sims,threshold):
         infec_list.append(graph.inf_count)
         infected_at_t.append(graph.infected_at_t)
 
-    metrics = {'infec_list': infec_list, 'early_deg': early_deg,'reach_list':reach_list,'infected_at_t':infected_at_t,'speed_list':speed_list}
+    metrics = {'infec_list': infec_list, 'early_deg': early_deg,
+               'reach_list': reach_list, 'infected_at_t': infected_at_t,
+               'speed_list': speed_list}
     return metrics
-

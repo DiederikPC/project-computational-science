@@ -50,10 +50,10 @@ class SophGraph(SocialGraph):
         # stable value of 0.014
         if n_inf_neigh > 18:
             return self.i * ((0.014 * self.ave_degree) /
-                    ((1 + self.decay_rate * self.t) * n_neigh))
+                             ((1 + self.decay_rate * self.t) * n_neigh))
 
         return self.i * ((probs[n_inf_neigh] * self.ave_degree) /
-                ((1 + self.decay_rate * self.t) * n_neigh))
+                         ((1 + self.decay_rate * self.t) * n_neigh))
 
     def make_timestep(self):
         """
@@ -97,10 +97,5 @@ class SophGraph(SocialGraph):
 
         longest = list((nx.single_source_shortest_path_length(copyG,
                                                               self.seed)).
-<<<<<<< HEAD
-                                                              values())[-1]
-
-=======
                        values())[-1]
->>>>>>> 91be69512e5019281ba8072357137dd5b295969c
         return longest
