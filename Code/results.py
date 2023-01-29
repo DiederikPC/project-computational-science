@@ -31,8 +31,9 @@ def get_param_results(parameter, parameter_range, is_SI):
                         'early_deg_BA': BA_results['early_deg'],
                         'speed_list_FB': FB_results['speed_list'],
                         'speed_list_BA': BA_results['speed_list']})
-
-    data.to_csv('../Data/Results/results_SI_I.csv', index=False)
+    
+    model = 'SI' if is_SI else 'Soph'
+    data.to_csv(f'../Data/Results/results_{model}_{parameter}.csv', index=False)
 
 
 
