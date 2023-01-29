@@ -42,8 +42,15 @@ def get_metrics(is_SI, is_BA, i, i_init, time_steps, decay_rate, sims,
                                graph.infected_at_t[-1]) < threshold
         speed_t = graph.infected_at_t[:np.where(inf_diff)[0][0]]
         difs = [speed_t[i+1] - speed_t[i] for i in range(len(speed_t) - 2)]
+
+        # On the off chance no new nodes get infected during the entire
+        # simulation the average speed is set to zero
+        if not difs:
+            difs = [0]
+
         mean_speed = np.mean(difs)
         speed_list.append(mean_speed)
+
 
         # if not is_SI:
         #     reach_list.append(graph.determine_reach())
