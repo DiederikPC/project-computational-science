@@ -21,12 +21,12 @@ for i in parameter_range:
         SI_FB_results[name].append(np.mean(SI_FB[name]))
         SI_BA_results[name].append(np.mean(SI_BA[name]))
 
-data = pd.DataFrame({'i':parameter_range,'infec_list_FB':SI_FB_results['infec_list'],
-'infec_list_BA':SI_BA_results['infec_list'],'early_deg_FB':SI_FB_results['early_deg'],
-'early_deg_BA':SI_BA_results['early_deg'],'speed_list_FB':SI_FB_results['speed_list'],
-'speed_list_BA':SI_BA_results['speed_list']})
+data = pd.DataFrame({'i': parameter_range, 'infec_list_FB': SI_FB_results['infec_list'],
+                     'infec_list_BA': SI_BA_results['infec_list'], 'early_deg_FB': SI_FB_results['early_deg'],
+                     'early_deg_BA': SI_BA_results['early_deg'], 'speed_list_FB': SI_FB_results['speed_list'],
+                     'speed_list_BA': SI_BA_results['speed_list']})
 
-data.to_csv('../Data/Results/results_SI_I.csv',index = False)
+data.to_csv('../Data/Results/results_SI_I.csv', index=False)
 
 
 

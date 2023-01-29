@@ -31,7 +31,10 @@ class SocialGraph:
 
         # initialize node states
         states = np.zeros(len(nodes))
-        states[np.random.uniform(size=len(nodes)) < self.i_init] = 1
+        inf_indices = np.random.choice(list(range(4039)), size=round(self.i_init * len(nodes)))
+        for node in inf_indices:
+            states[node] = 1
+
         self.node_states = dict(zip(nodes, states))
 
         nx.set_node_attributes(self.G, self.node_states, "state")
