@@ -40,7 +40,7 @@ def get_metrics(is_SI, is_BA, i, i_init, time_steps, decay_rate, sims,
         inf_diff = np.absolute(np.array(graph.infected_at_t) -
                                graph.infected_at_t[-1]) < threshold
         speed_t = graph.infected_at_t[:np.where(inf_diff)[0][0]]
-        difs = [speed_t[i+1] - speed_t[i] for i in range(len(speed_t)-2)]
+        difs = [speed_t[i+1] - speed_t[i] for i in range(len(speed_t) - 2)]
         speed_list.append(np.mean(difs))
 
         # if not is_SI:
