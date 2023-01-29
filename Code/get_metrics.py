@@ -2,6 +2,7 @@ import numpy as np
 import math
 from SocialGraph import SocialGraph
 from SophGraph import SophGraph
+import pandas as pd
 
 
 # SIGNIFICANCE TEST OF DIFFERENCE IN DIFFERENT METRICS' DISTRIBUTION BETWEEN FB
