@@ -17,8 +17,6 @@ class SocialGraph:
     """
 
     def set_init_stats(self):
-
-        # print(self.node_states.values())
         self.inf_count = np.sum(list(self.node_states.values()))
         self.sus_count = len(self.G.nodes) - self.inf_count
         self.inf_degree_avg = []
@@ -33,18 +31,19 @@ class SocialGraph:
 
         # initialize node states
         states = np.zeros(len(nodes))
-        states[np.random.uniform(size=len(nodes)) < self.i_init] = 1
+        inf_indices = np.random.choice(list(range(4039)), size=round(self.i_init * len(nodes)))
+        for node in inf_indices:
+            states[node] = 1
+
         self.node_states = dict(zip(nodes, states))
 
         nx.set_node_attributes(self.G, self.node_states, "state")
         self.set_init_stats()
 
-
         self.got_infected_at = {}
         for node in self.G.nodes:
             if self.G.nodes[node]['state'] == 1:
                 self.got_infected_at[node] = 0
-
 
     def __init__(self, i, i_init, time_steps, edgelist=None,
                  is_barabasi=False):
@@ -57,13 +56,13 @@ class SocialGraph:
         else:
             self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
             self.pos = None
+            self.edgelist = edgelist
+
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
-        self.edgelist = edgelist
         self.current_t = 0
         self.initialize_states()
-
 
     def draw_graph(self, title, show=False):
         """
@@ -71,26 +70,29 @@ class SocialGraph:
             node is blue.
         """
         node_colors = []
-        if self.edgelist is not None and self.pos == None:
+        if self.edgelist is not None and self.pos is None:
             print(f"SKEEBADABADABAP {self.edgelist}")
             self.pos = nx.spring_layout(self.G)
+
         for state in nx.get_node_attributes(self.G, "state").values():
             if state == 1:
                 node_colors.append('red')
             else:
                 node_colors.append('blue')
+
         print(self.edgelist)
         if self.edgelist is not None:
-            nx.draw(self.G, self.pos, with_labels=False, node_color=node_colors,
-                    node_size=20)
+            nx.draw(self.G, self.pos, with_labels=False,
+                    node_color=node_colors, node_size=20)
         else:
             nx.draw(self.G, with_labels=False, node_color=node_colors,
                     node_size=20)
+
         plt.savefig("../Plots/" + title + ".png")
+
         if show:
             plt.show()
         plt.close()
-
 
     def show_infected_plot(self, title):
         """
@@ -116,7 +118,6 @@ class SocialGraph:
         self.sus_count = len(self.node_states) - self.inf_count
         self.infected_at_t.append(self.inf_count)
         self.susceptible_at_t.append(self.sus_count)
-
 
     def make_timestep(self):
         """
@@ -151,10 +152,10 @@ class SocialGraph:
 
         return self.inf_count
 
-
     def calculate_explosiveness(self):
         inf = self.infected_at_t
-        explosive_lst = [(inf[x+1]-inf[x])/len(self.G.nodes()) for x in range(len(inf)-1)]
+        explosive_lst = [(inf[x+1]-inf[x])/len(self.G.nodes())
+                         for x in range(len(inf)-1)]
         return explosive_lst
 
 
@@ -162,13 +163,16 @@ class SocialGraph:
 
         # calculate node centralities
         degree_centrality = nx.degree_centrality(self.G)
-        sorted_degree = sorted(degree_centrality.items(), key=lambda x: x[1], reverse=True)
+        sorted_degree = sorted(degree_centrality.items(),
+                               key=lambda x: x[1], reverse=True)
 
         betweenness_centrality = nx.betweenness_centrality(self.G)
-        sorted_betweenness = sorted(betweenness_centrality.items(), key=lambda x: x[1], reverse=True)
+        sorted_betweenness = sorted(betweenness_centrality.items(),
+                                    key=lambda x: x[1], reverse=True)
 
         closeness_centrality = nx.closeness_centrality(self.G)
-        sorted_closeness = sorted(closeness_centrality.items(), key=lambda x: x[1], reverse=True)
+        sorted_closeness = sorted(closeness_centrality.items(),
+                                  key=lambda x: x[1], reverse=True)
 
         # calculate individual node influence scores (the lower the better)
         centralities = [sorted_degree, sorted_betweenness, sorted_closeness]
@@ -178,12 +182,15 @@ class SocialGraph:
             for i, (node, _) in enumerate(centrality):
                 centrality_scores[str(node)] += i
 
-        centrality_scores = sorted(centrality_scores.items(), key=lambda x: x[1])
+        centrality_scores = sorted(centrality_scores.items(),
+                                   key=lambda x: x[1])
 
         # get most influential nodes with cutoff point (100)
-        most_inf_nodes = [node for (node, score) in centrality_scores if score <= 100]
+        most_inf_nodes = [node for (node, score) in centrality_scores if
+                          score <= 100]
         self.most_inf_nodes = most_inf_nodes
-        print(f'Most influential nodes as a combination of degree, betweenness and closeness centrality:\n{most_inf_nodes}')
+        print(f'Most influential nodes as a combination of degree, betweenness\
+               and closeness centrality:\n{most_inf_nodes}')
 
         # visualize influential nodes
         if visualize:
@@ -197,7 +204,8 @@ class SocialGraph:
                     colors.append('blue')
                     size.append(2)
 
-            nx.draw(self.G, with_labels=False, node_color=colors, node_size=size)
+            nx.draw(self.G, with_labels=False, node_color=colors,
+                    node_size=size)
             plt.show()
 
         return most_inf_nodes

@@ -49,11 +49,11 @@ class SophGraph(SocialGraph):
         # if the number of infected neighbors is larger than 18 we assume
         # stable value of 0.014
         if n_inf_neigh > 18:
-            return ((0.014 * self.ave_degree) /
-                    ((1 + self.decay_rate * self.t) * n_neigh))
+            return self.i * ((0.014 * self.ave_degree) /
+                             ((1 + self.decay_rate * self.t) * n_neigh))
 
-        return ((probs[n_inf_neigh] * self.ave_degree) /
-                ((1 + self.decay_rate * self.t) * n_neigh))
+        return self.i * ((probs[n_inf_neigh] * self.ave_degree) /
+                         ((1 + self.decay_rate * self.t) * n_neigh))
 
     def make_timestep(self):
         """
@@ -89,12 +89,13 @@ class SophGraph(SocialGraph):
     def determine_reach(self):
         longest = 0
         nodes = np.array(list(self.G.nodes))
-        values = np.array(list(nx.get_node_attributes(self.G, "state").values()))
+        values = np.array(list(nx.get_node_attributes(self.G,
+                                                      "state").values()))
         copyG = self.G.copy()
         for node in nodes[np.where(values == 0)]:
             copyG.remove_node(node)
 
         longest = list((nx.single_source_shortest_path_length(copyG,
                                                               self.seed)).
-                                                              values())[-1]
+                       values())[-1]
         return longest
