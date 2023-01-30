@@ -6,11 +6,13 @@ import pandas as pd
 
 # function to get all metrics for a model as a parameter changes
 def get_param_results(parameter, parameter_range, is_SI):
-    sims = 2
+    sims = 20
     threshold = 30
     params = {"i": 0.01, "i_init": 0.001, "time_steps": 30, "decay_rate": 0.1}
     if not is_SI: 
         params['i'] = 1
+    if parameter == 'decay':
+        params['i_init'] = 0.06
     metric_names = ['infec_list', 'early_deg', 'speed_list']
     FB_results = {'infec_list': [], 'early_deg': [], 'speed_list': []}
     BA_results = {'infec_list': [], 'early_deg': [], 'speed_list': []}
@@ -39,9 +41,10 @@ def get_param_results(parameter, parameter_range, is_SI):
     model = 'SI' if is_SI else 'Soph'
     data.to_csv(f'../Data/Results/results_{model}_{parameter}.csv', index=False)
 
+steps = 20
 parameters = ['i','i_init','i','i_init','decay']
-parameters_range = [np.arange(0.01,0.21,0.01),np.arange(0.01,0.21,0.01),np.arange(0.5,2.5,0.1),
-                np.arange(0.01,0.21,0.01),np.arange(0.01,0.21,0.01)]
+parameters_range = [np.linspace(0,0.042,steps),np.linspace(0,0.03,steps),np.linspace(0.5,2.5,steps),
+                np.linspace(0.01,0.21,steps),np.linspace(0.01,0.41,steps)]
 models = [True, True, False, False, False]
 
 for i in range(len(parameters)):
