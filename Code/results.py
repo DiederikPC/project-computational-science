@@ -27,10 +27,13 @@ def get_param_results(parameter, parameter_range, is_SI):
                             params["time_steps"], params["decay_rate"], sims,
                             threshold)
         for name in metric_names:
-            FB_results[name].append(np.mean(FB[name]))
-            BA_results[name].append(np.mean(BA[name]))
+            FB_results[name] = FB_results[name] + FB[name]
+            BA_results[name] = BA_results[name] + BA[name]
 
-    data = pd.DataFrame({f'{parameter}': parameter_range,
+    raw_index = [np.repeat(round(x,4),sims) for x in parameter_range]
+    index = [elem for sublist in raw_index for elem in sublist]
+
+    data = pd.DataFrame({f'{parameter}': index,
                         'infec_list_FB': FB_results['infec_list'],
                         'infec_list_BA': BA_results['infec_list'],
                         'early_deg_FB': FB_results['early_deg'],
@@ -40,6 +43,7 @@ def get_param_results(parameter, parameter_range, is_SI):
     
     model = 'SI' if is_SI else 'Soph'
     data.to_csv(f'../Data/Results/results_{model}_{parameter}.csv', index=False)
+
 
 steps = 20
 parameters = ['i','i_init','i','i_init','decay']
