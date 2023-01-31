@@ -31,7 +31,10 @@ class SocialGraph:
 
         # initialize node states
         states = np.zeros(len(nodes))
-        states[np.random.uniform(size=len(nodes)) < self.i_init] = 1
+        inf_indices = np.random.choice(list(range(4039)), size=round(self.i_init * len(nodes)))
+        for node in inf_indices:
+            states[node] = 1
+
         self.node_states = dict(zip(nodes, states))
 
         nx.set_node_attributes(self.G, self.node_states, "state")
@@ -53,10 +56,11 @@ class SocialGraph:
         else:
             self.G = nx.read_edgelist("../Data/" + edgelist, delimiter=' ')
             self.pos = None
+            self.edgelist = edgelist
+
         self.i = i
         self.i_init = i_init
         self.time_steps = time_steps
-        self.edgelist = edgelist
         self.current_t = 0
         self.initialize_states()
 
@@ -154,8 +158,6 @@ class SocialGraph:
                          for x in range(len(inf)-1)]
         return explosive_lst
 
-    def get_clustering_coeff(self):
-        return nx.average_clustering(self.G)
 
     def get_influential_nodes(self, visualize=False):
 
