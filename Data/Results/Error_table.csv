@@ -1,0 +1,16 @@
+,model,parameter,metric,avg_perc_error
+0,SI,i,infec,20.693984870969064
+1,SI,i,early_deg,23.0972368009928
+2,SI,i,speed,56.38096427462541
+3,SI,i_init,infec,18.564689783831252
+4,SI,i_init,early_deg,35.90520414003392
+5,SI,i_init,speed,32.019901944715485
+6,Soph,i,infec,38.85723512191649
+7,Soph,i,early_deg,50.5057770019666
+8,Soph,i,speed,43.371429973659495
+9,Soph,i_init,infec,28.2697049619004
+10,Soph,i_init,early_deg,47.21904170177867
+11,Soph,i_init,speed,39.89671637658064
+12,Soph,decay_rate,infec,26.523624805028017
+13,Soph,decay_rate,early_deg,52.17785451450522
+14,Soph,decay_rate,speed,48.27412724512082

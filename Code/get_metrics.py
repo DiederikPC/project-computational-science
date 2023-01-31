@@ -72,7 +72,7 @@ def average_error_percent(FB, BA):
     Barabasi-Albert values. Arguments are a list for a metric for FB and a list
     for the same metric for BA
     """
-    return np.mean((np.abs(np.array(BA) - np.array(FB)) / np.array(BA)))
+    return 100*np.mean((np.abs(np.array(BA) - np.array(FB)) / np.array(BA)))
 
 # function to get all metrics for a model as a parameter changes
 def get_param_results(parameter, parameter_range, is_SI):
