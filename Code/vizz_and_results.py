@@ -24,5 +24,5 @@ def get_graph(parameter,model):
     axs[1, 1].set_xlabel(parameter)
     plt.show()
 
-get_graph('decay','SI')
+get_graph('decay','Soph')
 
