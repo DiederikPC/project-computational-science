@@ -76,9 +76,11 @@ def average_error_percent(FB, BA):
 
 # function to get all metrics for a model as a parameter changes
 def get_param_results(parameter, parameter_range, is_SI):
-    sims = 5
+    sims = 20
     threshold = 30
     params = {"i": 0.01, "i_init": 0.001, "time_steps": 30, "decay_rate": 0.1}
+    if not is_SI: 
+        params['i'] = 1
     metric_names = ['infec_list', 'early_deg', 'speed_list']
     FB_results = {'infec_list': [], 'early_deg': [], 'speed_list': []}
     BA_results = {'infec_list': [], 'early_deg': [], 'speed_list': []}
@@ -93,10 +95,13 @@ def get_param_results(parameter, parameter_range, is_SI):
                             params["time_steps"], params["decay_rate"], sims,
                             threshold)
         for name in metric_names:
-            FB_results[name].append(np.mean(FB[name]))
-            BA_results[name].append(np.mean(BA[name]))
+            FB_results[name] = FB_results[name] + FB[name]
+            BA_results[name] = BA_results[name] + BA[name]
 
-    data = pd.DataFrame({'i': parameter_range,
+    raw_index = [np.repeat(round(x,4),sims) for x in parameter_range]
+    index = [elem for sublist in raw_index for elem in sublist]
+
+    data = pd.DataFrame({f'{parameter}': index,
                         'infec_list_FB': FB_results['infec_list'],
                         'infec_list_BA': BA_results['infec_list'],
                         'early_deg_FB': FB_results['early_deg'],
@@ -106,4 +111,5 @@ def get_param_results(parameter, parameter_range, is_SI):
     
     model = 'SI' if is_SI else 'Soph'
     data.to_csv(f'../Data/Results/results_{model}_{parameter}.csv', index=False)
+
 
