@@ -158,8 +158,6 @@ class SocialGraph:
                          for x in range(len(inf)-1)]
         return explosive_lst
 
-    def get_clustering_coeff(self):
-        return nx.average_clustering(self.G)
 
     def get_influential_nodes(self, visualize=False):
 
