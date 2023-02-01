@@ -31,7 +31,8 @@ class SocialGraph:
 
         # initialize node states
         states = np.zeros(len(nodes))
-        inf_indices = np.random.choice(list(range(4039)), size=round(self.i_init * len(nodes)))
+        inf_indices = np.random.choice(list(range(4039)),
+                                       size=round(self.i_init * len(nodes)))
         for node in inf_indices:
             states[node] = 1
 
@@ -157,7 +158,6 @@ class SocialGraph:
         explosive_lst = [(inf[x+1]-inf[x])/len(self.G.nodes())
                          for x in range(len(inf)-1)]
         return explosive_lst
-
 
     def get_influential_nodes(self, visualize=False):
 
