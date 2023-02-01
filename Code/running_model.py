@@ -9,4 +9,4 @@ parameters_range = [np.linspace(0.5, 2.5, steps),
 models = [False, False, False]
 
 for i in range(len(parameters)):
-    get_param_results(parameters[i], parameters_range[i], models[i])
+    get_param_results(parameters[i], parameters_range[i], models[i], 20)

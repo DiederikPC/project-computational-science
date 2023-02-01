@@ -6,8 +6,11 @@ import pandas as pd
 
 # VISUALIZATION
 def get_graph(parameter, model):
-
-    raw_data = pd.read_csv(fr'..\Data\Results\results_{model}_{parameter}.csv')
+    """
+        Visualize the measured metrics for the given parameter and model
+        in a graph.
+    """
+    raw_data = pd.read_csv(fr'../Data/Results/results_{model}_{parameter}.csv')
 
     raw_data['infec_list_FB'] = np.array(raw_data['infec_list_FB'])/4039
     raw_data['infec_list_BA'] = np.array(raw_data['infec_list_BA'])/4039
@@ -27,9 +30,9 @@ def get_graph(parameter, model):
     for i in range(3):
 
         fb_mean = np.array(data_m.iloc[:, for_fb[i]])
-        fb_error = np.array(data_sd.iloc[:, for_fb[i]])
+        fb_error = np.array(data_sd.iloc[:, for_fb[i]]) * 1.96
         ba_mean = np.array(data_m.iloc[:, for_ba[i]])
-        ba_error = np.array(data_sd.iloc[:, for_ba[i]])
+        ba_error = np.array(data_sd.iloc[:, for_ba[i]]) * 1.96
 
         axs[first_axis[i], second_axis[i]].plot(data_m.iloc[:, 0],
                                                 fb_mean, label='FB',
@@ -37,21 +40,22 @@ def get_graph(parameter, model):
         axs[first_axis[i], second_axis[i]].plot(data_m.iloc[:, 0],
                                                 ba_mean, label='BA',
                                                 color='brown')
+
         axs[first_axis[i], second_axis[i]].fill_between(data_m.iloc[:, 0],
-                                                        fb_mean - fb_error,
                                                         fb_mean + fb_error,
+                                                        fb_mean - fb_error,
                                                         alpha=0.2,
                                                         edgecolor='blue')
         axs[first_axis[i], second_axis[i]].fill_between(data_m.iloc[:, 0],
-                                                        ba_mean - ba_error,
                                                         ba_mean + ba_error,
+                                                        ba_mean - ba_error,
                                                         alpha=0.2,
                                                         color='brown',
                                                         edgecolor='brown')
         axs[first_axis[i], second_axis[i]].set_ylabel(title[i])
 
     axs[0, 0].legend()
-
+    plt.savefig("../image.png")
     plt.show()
 
 
@@ -72,7 +76,7 @@ for mod in models:
     else:
         parameters = parameters_Soph
     for par in parameters:
-        raw_data = pd.read_csv(fr'..\Data\Results\results_{mod}_{par}.csv')
+        raw_data = pd.read_csv(fr'../Data/Results/results_{mod}_{par}.csv')
         c_raw_data = raw_data[raw_data[par] != 0]
         data_m = c_raw_data.groupby(par).mean()
         i = 0

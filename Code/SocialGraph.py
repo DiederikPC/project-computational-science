@@ -17,6 +17,9 @@ class SocialGraph:
     """
 
     def set_init_stats(self):
+        """
+            Set the initial statistics for the Social Graph.
+        """
         self.inf_count = np.sum(list(self.node_states.values()))
         self.sus_count = len(self.G.nodes) - self.inf_count
         self.inf_degree_avg = []
@@ -25,7 +28,8 @@ class SocialGraph:
 
     def initialize_states(self):
         """
-            This is called only in the __init__
+            This is called only in the __init__. It randomly initializes the
+            infected node states.
         """
         nodes = self.G.nodes()
 
@@ -48,6 +52,10 @@ class SocialGraph:
 
     def __init__(self, i, i_init, time_steps, edgelist=None,
                  is_barabasi=False):
+        """
+            Initialize the SocialGraph class, including the states and
+            statistics.
+        """
         if edgelist is None and not is_barabasi:
             print("Need to either give and edgelist or set \
                   is_barabasi to true")
@@ -154,13 +162,19 @@ class SocialGraph:
         return self.inf_count
 
     def calculate_explosiveness(self):
+        """
+            Calculates the percentage of the network that gets infected each
+            timestep
+        """
         inf = self.infected_at_t
-        explosive_lst = [(inf[x+1]-inf[x])/len(self.G.nodes())
-                         for x in range(len(inf)-1)]
+        explosive_lst = [(inf[x + 1] - inf[x]) / len(self.G.nodes())
+                         for x in range(len(inf) - 1)]
         return explosive_lst
 
     def get_influential_nodes(self, visualize=False):
-
+        """
+            Get the most influential nodes in the network.
+        """
         # calculate node centralities
         degree_centrality = nx.degree_centrality(self.G)
         sorted_degree = sorted(degree_centrality.items(),

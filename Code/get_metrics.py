@@ -18,7 +18,6 @@ def get_metrics(is_SI, is_BA, i, i_init, time_steps, decay_rate, sims,
     # THE FOUR METRICS
     infec_list = []
     early_deg = []
-    reach_list = []
     speed_list = []
 
     # USED FOR CALCULATING MSE
@@ -51,16 +50,12 @@ def get_metrics(is_SI, is_BA, i, i_init, time_steps, decay_rate, sims,
         mean_speed = np.mean(difs)
         speed_list.append(mean_speed)
 
-        if not is_SI:
-            reach_list.append(graph.determine_reach())
-
         early_deg.append(np.mean(graph.inf_degree_avg[:10]))
         infec_list.append(graph.inf_count)
         infected_at_t.append(graph.infected_at_t)
 
     metrics = {'infec_list': infec_list, 'early_deg': early_deg,
-               'reach_list': reach_list, 'infected_at_t': infected_at_t,
-               'speed_list': speed_list}
+               'infected_at_t': infected_at_t, 'speed_list': speed_list}
     return metrics
 
 
@@ -75,17 +70,14 @@ def average_error_percent(FB, BA):
 
 
 # function to get all metrics for a model as a parameter changes
-def get_param_results(parameter, parameter_range, is_SI):
-    sims = 20
+def get_param_results(parameter, parameter_range, is_SI, sims):
     threshold = 30
     params = {"i": 0.01, "i_init": 0.001, "time_steps": 30, "decay_rate": 0.1}
     if not is_SI:
         params['i'] = 1
-    metric_names = ['infec_list', 'early_deg', 'speed_list', 'reach_list']
-    FB_results = {'infec_list': [], 'early_deg': [], 'speed_list': [],
-                  'reach_list': []}
-    BA_results = {'infec_list': [], 'early_deg': [], 'speed_list': [],
-                  'reach_list': []}
+    metric_names = ['infec_list', 'early_deg', 'speed_list']
+    FB_results = {'infec_list': [], 'early_deg': [], 'speed_list': []}
+    BA_results = {'infec_list': [], 'early_deg': [], 'speed_list': []}
 
     for j in parameter_range:
         params[parameter] = j
@@ -109,9 +101,7 @@ def get_param_results(parameter, parameter_range, is_SI):
                          'early_deg_FB': FB_results['early_deg'],
                          'early_deg_BA': BA_results['early_deg'],
                          'speed_list_FB': FB_results['speed_list'],
-                         'speed_list_BA': BA_results['speed_list'],
-                         'reach_list_FB': FB_results['reach_list'],
-                         'reach_list_BA': BA_results['reach_list']})
+                         'speed_list_BA': BA_results['speed_list']})
 
     model = 'SI' if is_SI else 'Soph'
     data.to_csv(f'../Data/Results/results_{model}_{parameter}.csv',

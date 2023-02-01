@@ -4,9 +4,21 @@ import numpy as np
 
 
 class SophGraph(SocialGraph):
-
+    """
+        A class to represent a more sophisticated network than the SocialGraph
+        class, the improvements are based on empirical data. Some of them are:
+            - A decay rate, which 'ages' an idea, making it less likely to
+                spread during later timesteps
+            - Clustering the initial nodes instead of picking random nodes
+                through the network
+            - Taking the spread probability from previous research, instead
+                of setting it ourselves.
+    """
     def __init__(self, i, i_init, time_steps, decay_rate, edgelist=None,
                  is_barabasi=False):
+        """
+            Initialize the SophGraph class, mostly by calling the socialgraph.
+        """
         super().__init__(i, i_init, time_steps, edgelist=edgelist,
                          is_barabasi=is_barabasi)
         self.t = 1
@@ -16,6 +28,11 @@ class SophGraph(SocialGraph):
         self.initialize_cluster()
 
     def initialize_cluster(self):
+        """
+            Picks a random node and infects it and its neighbourhood. If that
+            does not infect a sufficient amount of nodes (set by i_init), it
+            picks one of the neighbours and infects that neighbourhood.
+        """
         # set all nodes states to 0
         nodes = self.G.nodes
         self.node_states = dict(zip(nodes, np.zeros(len(nodes))))
@@ -39,14 +56,14 @@ class SophGraph(SocialGraph):
     def soph_inf_chance(self, n_neigh, n_inf_neigh, ):
         """
         Returns the infection chance given number of infected neighbors r and
-        global decay rate
+        global decay rate.
         """
-        # probabilities read by eye from the paper we discussed
+        # Probabilities read by eye from the paper we discussed
         probs = [0, 0.014, 0.02, 0.021, 0.021, 0.02, 0.019, 0.018, 0.017,
                  0.016, 0.016, 0.016, 0.015, 0.015, 0.014, 0.014, 0.014,
                  0.013, 0.014]
 
-        # if the number of infected neighbors is larger than 18 we assume
+        # If the number of infected neighbors is larger than 18 we assume
         # stable value of 0.014
         if n_inf_neigh > 18:
             return self.i * ((0.014 * self.ave_degree) /
@@ -87,6 +104,11 @@ class SophGraph(SocialGraph):
         return self.inf_count
 
     def determine_reach(self):
+        """
+            Determines the length of the shortest distance between the furthest
+            infected node and the very first infected node. **Not used for the
+            research**
+        """
         longest = 0
         nodes = np.array(list(self.G.nodes))
         values = np.array(list(nx.get_node_attributes(self.G,
