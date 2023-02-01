@@ -14,7 +14,9 @@ threshold = 300
 
 def get_metrics(is_SI, is_BA, i, i_init, time_steps, decay_rate, sims,
                 threshold):
-
+    """
+        Calculate the desired metrics for a set of parameters.
+    """
     # THE FOUR METRICS
     infec_list = []
     early_deg = []
@@ -71,6 +73,9 @@ def average_error_percent(FB, BA):
 
 # function to get all metrics for a model as a parameter changes
 def get_param_results(parameter, parameter_range, is_SI, sims):
+    """
+        Get all metrics for a model for a parameter and parameter range.
+    """
     threshold = 30
     params = {"i": 0.01, "i_init": 0.001, "time_steps": 30, "decay_rate": 0.1}
     if not is_SI:
@@ -94,7 +99,6 @@ def get_param_results(parameter, parameter_range, is_SI, sims):
 
     raw_index = [np.repeat(round(x, 4), sims) for x in parameter_range]
     index = [elem for sublist in raw_index for elem in sublist]
-    print(FB_results)
     data = pd.DataFrame({f'{parameter}': index,
                         'infec_list_FB': FB_results['infec_list'],
                          'infec_list_BA': BA_results['infec_list'],
