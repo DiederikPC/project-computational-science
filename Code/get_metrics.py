@@ -8,7 +8,7 @@ def get_metrics(is_SI, is_BA, i, i_init, time_steps, decay_rate, sims,
                 threshold):
     """ 
     For a given network and model, and provided its parameter values, runs the model n=sims times
-    and stores relevant metrics (reach, speed and avg. degree of early infected nodes) for each
+    and stores relevant metrics (proportion infected, speed and avg. degree of early infected nodes) for each
     of the simulations. 
     """
     infec_list = []
