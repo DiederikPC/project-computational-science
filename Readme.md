@@ -6,8 +6,11 @@ Date: 02-02-2023
 
 ## Explanation of files
 The SocialGraph.py, SophGraph.py and get_metrics.py are files meant to be
-imported and used by other files. structure_analysis.py and running_model.py
-are both files used to create plots or print analysis data.
+imported and used by other files. structure_analysis.py  can be ran to study 
+the structure of both used networks. running_model.py is ran to generate data 
+for the three used metrics over the parameter ranges chosen and be stored in 
+Results. This data is used by visualization_&_results.py to generate plots and 
+calculate the average percent error.
 
 ## Explanation of network
 The two networks used are barabasi-albert and an empirical facebook network.
