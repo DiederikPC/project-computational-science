@@ -1,28 +1,21 @@
+# FUNCTIONS USED IN RUNNING_MODEL.PY AND VISUALIZE_&_RESULTS.PY
 import numpy as np
 from SocialGraph import SocialGraph
 from SophGraph import SophGraph
 import pandas as pd
 
-
-# SIGNIFICANCE TEST OF DIFFERENCE IN DIFFERENT METRICS' DISTRIBUTION BETWEEN FB
-# AND BA NETWORK
-
-# GENERAL PARAMETERS
-i, i_init, time_steps, decay_rate, sims = 0.01, 0.001, 30, 0.01, 5
-threshold = 300
-
-
 def get_metrics(is_SI, is_BA, i, i_init, time_steps, decay_rate, sims,
                 threshold):
+    """ 
+    For a given network and model, and provided its parameter values, runs the model n=sims times
+    and stores relevant metrics (reach, speed and avg. degree of early infected nodes) for each
+    of the simulations. 
     """
-        Calculate the desired metrics for a set of parameters.
-    """
-    # THE FOUR METRICS
     infec_list = []
     early_deg = []
+    reach_list = []
     speed_list = []
 
-    # USED FOR CALCULATING MSE
     infected_at_t = []
 
     for iter in range(sims):
@@ -52,37 +45,33 @@ def get_metrics(is_SI, is_BA, i, i_init, time_steps, decay_rate, sims,
         mean_speed = np.mean(difs)
         speed_list.append(mean_speed)
 
+        if not is_SI:
+            reach_list.append(graph.determine_reach())
+
         early_deg.append(np.mean(graph.inf_degree_avg[:10]))
         infec_list.append(graph.inf_count)
         infected_at_t.append(graph.infected_at_t)
 
     metrics = {'infec_list': infec_list, 'early_deg': early_deg,
-               'infected_at_t': infected_at_t, 'speed_list': speed_list}
+               'reach_list': reach_list, 'infected_at_t': infected_at_t,
+               'speed_list': speed_list}
     return metrics
 
-
-# function to get average error percentage
-def average_error_percent(FB, BA):
+def get_param_results(parameter, parameter_range, is_SI):
     """
-    Returns the average percentage difference between Facebook and
-    Barabasi-Albert values. Arguments are a list for a metric for FB and a list
-    for the same metric for BA
+    For a given parameter and over a given range of values of this parameter, runs get_metrics on both 
+    the BA and FB networks at each of the values of the parameters and stores given metrics as csv file in Data/Results. 
     """
-    return 100*np.mean((np.abs(np.array(BA) - np.array(FB)) / np.array(BA)))
-
-
-# function to get all metrics for a model as a parameter changes
-def get_param_results(parameter, parameter_range, is_SI, sims):
-    """
-        Get all metrics for a model for a parameter and parameter range.
-    """
+    sims = 20
     threshold = 30
     params = {"i": 0.01, "i_init": 0.001, "time_steps": 30, "decay_rate": 0.1}
     if not is_SI:
         params['i'] = 1
-    metric_names = ['infec_list', 'early_deg', 'speed_list']
-    FB_results = {'infec_list': [], 'early_deg': [], 'speed_list': []}
-    BA_results = {'infec_list': [], 'early_deg': [], 'speed_list': []}
+    metric_names = ['infec_list', 'early_deg', 'speed_list', 'reach_list']
+    FB_results = {'infec_list': [], 'early_deg': [], 'speed_list': [],
+                  'reach_list': []}
+    BA_results = {'infec_list': [], 'early_deg': [], 'speed_list': [],
+                  'reach_list': []}
 
     for j in parameter_range:
         params[parameter] = j
@@ -99,14 +88,27 @@ def get_param_results(parameter, parameter_range, is_SI, sims):
 
     raw_index = [np.repeat(round(x, 4), sims) for x in parameter_range]
     index = [elem for sublist in raw_index for elem in sublist]
+    print(FB_results)
     data = pd.DataFrame({f'{parameter}': index,
                         'infec_list_FB': FB_results['infec_list'],
                          'infec_list_BA': BA_results['infec_list'],
                          'early_deg_FB': FB_results['early_deg'],
                          'early_deg_BA': BA_results['early_deg'],
                          'speed_list_FB': FB_results['speed_list'],
-                         'speed_list_BA': BA_results['speed_list']})
+                         'speed_list_BA': BA_results['speed_list'],
+                         'reach_list_FB': FB_results['reach_list'],
+                         'reach_list_BA': BA_results['reach_list']})
 
     model = 'SI' if is_SI else 'Soph'
     data.to_csv(f'../Data/Results/results_{model}_{parameter}.csv',
                 index=False)
+
+def average_error_percent(FB, BA):
+    """
+    Returns the average percentage difference between Facebook and
+    Barabasi-Albert values for a given metric. Arguments are a list for a metric for FB and a list
+    for the same metric for BA
+    """
+    return 100*np.mean((np.abs(np.array(BA) - np.array(FB)) / np.array(BA)))
+
+

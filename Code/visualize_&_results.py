@@ -1,10 +1,12 @@
+# FUNCTION TO VISUALIZE METRICS FOR A GIVEN PARAMETER AND MODEL COMBINATION AND CODE TO OBTAIN AVERAGE 
+# PERCENT ERROR BETWEEN FB AND BA NETWORKS FOR EACH METRIC, PARAMETER AND MODEL COMBINATION. FOR THIS 
+# IT ACCESSES THE CSV FILES SAVED BY RUNNING_MODEL.PY AND THE RESULT IS SAVED AS A CSV IN RESULTS. 
 import numpy as np
 import matplotlib.pyplot as plt
 from get_metrics import average_error_percent
 import pandas as pd
 
-
-# VISUALIZATION
+# VISUALIZE
 def get_graph(parameter, model):
     """
         Visualize the measured metrics for the given parameter and model
@@ -58,10 +60,9 @@ def get_graph(parameter, model):
     plt.savefig("../image.png")
     plt.show()
 
-
 get_graph('decay_rate', 'Soph')
 
-# AVERAGE ERROR PERCENT
+# RESULTS
 results = pd.DataFrame({'model': [], 'parameter': [], 'metric': [],
                         'avg_perc_error': []})
 
@@ -84,3 +85,5 @@ for mod in models:
             avg = average_error_percent(data_m.iloc[:, i], data_m.iloc[:, i+1])
             i += 2
             results.loc[len(results.index)] = [mod, par, met, avg]
+
+results.to_csv('..\Data\Results\Error_table.csv',index = False)
