@@ -1,12 +1,24 @@
 from SocialGraph import SocialGraph
 import networkx as nx
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 class SophGraph(SocialGraph):
-
+    """
+        A class to represent a more sophisticated network than the SocialGraph
+        class, the improvements are based on empirical data. Some of them are:
+            - A decay rate, which 'ages' an idea, making it less likely to
+                spread during later timesteps
+            - Clustering the initial nodes instead of picking random nodes
+                through the network
+            - Taking the spread probability from previous research, instead
+                of setting it ourselves.
+    """
     def __init__(self, i, i_init, time_steps, decay_rate, edgelist=None,
                  is_barabasi=False):
+        """
+            Initialize the SophGraph class, mostly by calling the socialgraph.
+        """
         super().__init__(i, i_init, time_steps, edgelist=edgelist,
                          is_barabasi=is_barabasi)
         self.t = 1
@@ -16,6 +28,11 @@ class SophGraph(SocialGraph):
         self.initialize_cluster()
 
     def initialize_cluster(self):
+        """
+            Picks a random node and infects it and its neighbourhood. If that
+            does not infect a sufficient amount of nodes (set by i_init), it
+            picks one of the neighbours and infects that neighbourhood.
+        """
         # set all nodes states to 0
         nodes = self.G.nodes
         self.node_states = dict(zip(nodes, np.zeros(len(nodes))))
@@ -39,14 +56,14 @@ class SophGraph(SocialGraph):
     def soph_inf_chance(self, n_neigh, n_inf_neigh, ):
         """
         Returns the infection chance given number of infected neighbors r and
-        global decay rate
+        global decay rate.
         """
-        # probabilities read by eye from the paper we discussed
+        # Probabilities read by eye from the paper we discussed
         probs = [0, 0.014, 0.02, 0.021, 0.021, 0.02, 0.019, 0.018, 0.017,
                  0.016, 0.016, 0.016, 0.015, 0.015, 0.014, 0.014, 0.014,
                  0.013, 0.014]
 
-        # if the number of infected neighbors is larger than 18 we assume
+        # If the number of infected neighbors is larger than 18 we assume
         # stable value of 0.014
         if n_inf_neigh > 18:
             return self.i * ((0.014 * self.ave_degree) /
@@ -85,6 +102,31 @@ class SophGraph(SocialGraph):
             self.inf_degree_avg.append(np.mean(inf_degree))
 
         return self.inf_count
+
+    def simulate_spread(self, model):
+        """
+            Runs a simulation of the diffusion process and saves
+            an image per time step. Also makes the timestep as well.
+        """
+        if self.edgelist is not None and self.pos is None:
+            self.pos = nx.spring_layout(self.G)
+
+        for t in range(self.time_steps):
+            node_colors = []
+
+            for state in nx.get_node_attributes(self.G, "state").values():
+                if state == 1:
+                    node_colors.append('red')
+                else:
+                    node_colors.append('blue')
+
+            plt.figure(figsize=(1920/100, 1080/100))
+            nx.draw(self.G, self.pos, with_labels=False, node_color=node_colors,
+                    nodesize=20)
+            plt.savefig(f"../Evolution/{model}{t}.png")
+            plt.close()
+
+            self.make_timestep()
 
     def determine_reach(self):
         nodes = np.array(list(self.G.nodes))

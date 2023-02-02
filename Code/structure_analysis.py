@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def get_shortest_path_average(FB, BA, BA_averaging=False):
     """
     Calculates the average shortest path of a the emperical Facebook network
@@ -11,7 +12,7 @@ def get_shortest_path_average(FB, BA, BA_averaging=False):
 
     # FB shortest path
     FB_shortest = nx.average_shortest_path_length(FB)
-    
+
     # calculate average shortest path of 30 BA's if averaging is True
     if not BA_averaging:
         BA_shortest = nx.average_shortest_path_length(BA)
@@ -21,7 +22,8 @@ def get_shortest_path_average(FB, BA, BA_averaging=False):
         for _ in range(30):
             BA = nx.barabasi_albert_graph(4039, 22)
             BA_shortest_paths.append(nx.average_shortest_path_length(BA))
-        return FB_shortest, np.mean(BA_shortest_paths), np.std(BA_shortest_paths)
+        return (FB_shortest, np.mean(BA_shortest_paths),
+                np.std(BA_shortest_paths))
 
 
 def get_diameter(FB, BA, BA_averaging=False):
@@ -33,7 +35,7 @@ def get_diameter(FB, BA, BA_averaging=False):
 
     # FB diameter
     FB_diameter = nx.diameter(FB)
-    
+
     # calculate average diameter of 30 BA's if averaging is True
     if not BA_averaging:
         BA_diameter = nx.diameter(BA)
@@ -47,7 +49,7 @@ def get_diameter(FB, BA, BA_averaging=False):
 
 
 def get_clustering_coeff(FB, BA, BA_averaging=False):
-    
+
     # FB clustering coefficient
     FB_clust_coeff = nx.average_clustering(FB)
 
@@ -60,33 +62,41 @@ def get_clustering_coeff(FB, BA, BA_averaging=False):
         for _ in range(30):
             BA = nx.barabasi_albert_graph(4039, 22)
             BA_clust_coeffs.append(nx.average_clustering(BA))
-        return FB_clust_coeff, np.mean(BA_clust_coeffs), np.std(BA_clust_coeffs)
+        return (FB_clust_coeff, np.mean(BA_clust_coeffs),
+                np.std(BA_clust_coeffs))
 
 
 def get_degree_dist(FB, BA, BA_averaging=False):
-    
+
     # create figure for multiple subplots
     fig, axs = plt.subplots(3, 2)
 
     # create FB subplots
-    FB_degree_dist = sorted([degree for _, degree in FB.degree()], reverse=True)
+    FB_degree_dist = sorted([degree for _, degree in FB.degree()],
+                            reverse=True)
     axs[0, 0].plot(FB_degree_dist, marker="o")
     axs[0, 1].hist(FB_degree_dist, log=True, bins=50)
 
-    # create BA subplots, take average degrees from 30 BA's if averaging is True
+    # create BA subplots, take average degrees from 30 BA's if averaging is
+    #  True
     if not BA_averaging:
-        BA_degree_dist = sorted([degree for _, degree in BA.degree()], reverse=True)
+        BA_degree_dist = sorted([degree for _, degree in BA.degree()],
+                                reverse=True)
         axs[1, 0].plot(BA_degree_dist, "tab:orange", marker="o")
         axs[1, 1].hist(BA_degree_dist, log=True, bins=50, color="tab:orange")
     else:
         BA_degree_dists = []
         for _ in range(30):
             BA = nx.barabasi_albert_graph(4039, 22)
-            BA_degree_dists.append(sorted([degree for _, degree in BA.degree()], reverse=True))
-        
-        BA_avg_degree_dist = [np.mean([n[i] for n in BA_degree_dists]) for i in range(len(BA_degree_dists[0]))]
+            BA_degree_dists.append(sorted([degree for _,
+                                           degree in BA.degree()],
+                                          reverse=True))
+
+        BA_avg_degree_dist = [np.mean([n[i] for n in BA_degree_dists])
+                              for i in range(len(BA_degree_dists[0]))]
         axs[1, 0].plot(BA_avg_degree_dist, "tab:orange", marker="o")
-        axs[1, 1].hist(BA_avg_degree_dist, log=True, bins=50, color="tab:orange")
+        axs[1, 1].hist(BA_avg_degree_dist, log=True, bins=50,
+                       color="tab:orange")
 
     # set titles and axis labels for all subplots
     axs[0, 0].set_title('FB degree-rank plot')
@@ -128,7 +138,7 @@ def get_degree_dist(FB, BA, BA_averaging=False):
 
 
 def get_centralities(FB, BA, BA_averaging=False):
-        
+
     ##### Degree Centrality #####
     FB_degree = nx.degree_centrality(FB)
     FB_degree = sorted(FB_degree.items(), key=lambda x: x[1], reverse=True)
@@ -154,11 +164,13 @@ def get_centralities(FB, BA, BA_averaging=False):
 
     ##### Betweenness Centrality #####
     FB_betweenness = nx.betweenness_centrality(FB)
-    FB_betweenness = sorted(FB_betweenness.items(), key=lambda x: x[1], reverse=True)
+    FB_betweenness = sorted(FB_betweenness.items(), key=lambda x: x[1],
+                            reverse=True)
     # FB_betweenness = [score for _, score in FB_betweenness]
 
     BA_betweenness = nx.betweenness_centrality(BA)
-    BA_betweenness = sorted(BA_betweenness.items(), key=lambda x: x[1], reverse=True)
+    BA_betweenness = sorted(BA_betweenness.items(), key=lambda x: x[1],
+                            reverse=True)
     # BA_betweenness = [score for _, score in BA_betweenness]
 
     # plt.hist(FB_betweenness, log=True, bins=50)
@@ -179,11 +191,13 @@ def get_centralities(FB, BA, BA_averaging=False):
 
     ##### Closeness Centrality #####
     FB_closeness = nx.closeness_centrality(FB)
-    FB_closeness = sorted(FB_closeness.items(), key=lambda x: x[1], reverse=True)
+    FB_closeness = sorted(FB_closeness.items(), key=lambda x: x[1],
+                          reverse=True)
     # FB_closeness = [score for _, score in FB_closeness]
 
     BA_closeness = nx.closeness_centrality(BA)
-    BA_closeness = sorted(BA_closeness.items(), key=lambda x: x[1], reverse=True)
+    BA_closeness = sorted(BA_closeness.items(), key=lambda x: x[1],
+                          reverse=True)
     # BA_closeness = [score for _, score in BA_closeness]
 
     # plt.hist(FB_closeness, bins=50)
@@ -198,7 +212,6 @@ def get_centralities(FB, BA, BA_averaging=False):
     # print(np.mean(BA_closeness))
     # print(np.std(BA_closeness))
 
-
     ####################   INFLUENTIAL SCORES #####################
     # calculate individual node influence scores (the lower the better)
 
@@ -211,7 +224,7 @@ def get_centralities(FB, BA, BA_averaging=False):
             FB_centrality_scores[str(node)] += i
 
     FB_centrality_scores = sorted(FB_centrality_scores.items(),
-                                key=lambda x: x[1])
+                                  key=lambda x: x[1])
     FB_centrality_scores = [score for (_, score) in FB_centrality_scores]
 
     # BA centralities
@@ -223,9 +236,8 @@ def get_centralities(FB, BA, BA_averaging=False):
             BA_centrality_scores[str(node)] += i
 
     BA_centrality_scores = sorted(BA_centrality_scores.items(),
-                                key=lambda x: x[1])
+                                  key=lambda x: x[1])
     BA_centrality_scores = [score for (_, score) in BA_centrality_scores]
-
 
     plt.plot(FB_centrality_scores)
     plt.show()
@@ -238,8 +250,8 @@ def get_centralities(FB, BA, BA_averaging=False):
 
     return
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     FB = nx.read_edgelist("../Data/facebook_combined.txt", delimiter=' ')
     BA = nx.barabasi_albert_graph(4039, 22)
 
