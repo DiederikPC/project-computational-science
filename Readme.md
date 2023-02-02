@@ -38,7 +38,7 @@ variable in running_model to 20, and the sims in the function call to get_param_
 
 You can however, read in the results by running visualize_&_results.py, this will
 produce an image showing three metrics for both models, with changing the decay_rate
-parameter.
+parameter (i.e. the file image.png in the repository).
 
 ### Classes
 The SocialGraph and SophGraph classes were used to change the network into an
